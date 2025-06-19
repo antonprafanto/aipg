@@ -28,7 +28,7 @@ const AdobeStockPromptGenerator = () => {
     generatePrompts,
     copyPrompt,
     copyAllPrompts,
-    exportPrompts
+    exportPrompts,
   } = usePromptGeneration(settings, useCallback((key) => {
     const keys = key.split('.');
     let value = translations[settings.language];
@@ -146,6 +146,8 @@ const AdobeStockPromptGenerator = () => {
         <ControlPanel
           selectedCategory={settings.selectedCategory}
           setSelectedCategory={settings.setSelectedCategory}
+          selectedTheme={settings.selectedTheme}
+          setSelectedTheme={settings.setSelectedTheme}
           contentType={settings.contentType}
           setContentType={settings.setContentType}
           selectedStyle={settings.selectedStyle}

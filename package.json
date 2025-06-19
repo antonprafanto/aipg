@@ -1,5 +1,6 @@
 {
   "name": "aipg",
+  "homepage": "apcloud.my.id",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

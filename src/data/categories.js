@@ -1,68 +1,183 @@
 export const categories = {
-    business: {
-      name: 'Business & Technology',
-      nameId: 'Bisnis & Teknologi',
-      icon: '💼',
-      themes: [
-        'modern workspace', 'digital transformation', 'remote work setup', 'minimalist office',
-        'tech gadgets arrangement', 'corporate meeting room', 'startup environment',
-        'productivity tools', 'innovation concept', 'digital marketing', 'data visualization',
-        'cloud computing', 'cybersecurity', 'artificial intelligence', 'blockchain technology'
-      ]
-    },
-    lifestyle: {
-      name: 'Lifestyle & Wellness',
-      nameId: 'Gaya Hidup & Wellness',
-      icon: '🌱',
-      themes: [
-        'morning routine setup', 'meditation space', 'healthy meal prep', 'yoga environment',
-        'wellness products', 'self-care essentials', 'mindful living', 'sustainable lifestyle',
-        'home wellness corner', 'natural lighting', 'spa atmosphere', 'fitness equipment',
-        'organic skincare', 'mental health', 'work-life balance'
-      ]
-    },
-    food: {
-      name: 'Food & Nutrition',
-      nameId: 'Makanan & Nutrisi',
-      icon: '🍽️',
-      themes: [
-        'gourmet dish presentation', 'farm-to-table ingredients', 'artisanal cooking',
-        'healthy meal planning', 'food photography setup', 'kitchen essentials',
-        'organic produce', 'culinary art', 'restaurant ambiance', 'food styling',
-        'beverage photography', 'cooking process', 'seasonal ingredients', 'dietary trends'
-      ]
-    },
-    abstract: {
-      name: 'Abstract & Patterns',
-      nameId: 'Abstrak & Pola',
-      icon: '🎨',
-      themes: [
-        'geometric patterns', 'fluid dynamics', 'color gradients', 'texture exploration',
-        'minimalist composition', 'light effects', 'digital art', 'modern aesthetics',
-        'architectural details', 'material studies', 'particle effects', 'wave patterns',
-        'crystalline structures', 'mathematical beauty', 'optical illusions'
-      ]
-    },
-    nature: {
-      name: 'Nature & Landscapes',
-      nameId: 'Alam & Lanskap',
-      icon: '🌿',
-      themes: [
-        'serene landscapes', 'natural textures', 'seasonal changes', 'weather phenomena',
-        'botanical studies', 'natural lighting', 'environmental scenes', 'water elements',
-        'sky formations', 'natural patterns', 'forest environments', 'mountain vistas',
-        'ocean scenes', 'desert landscapes', 'wildlife habitats'
-      ]
-    },
-    architecture: {
-      name: 'Architecture & Interiors',
-      nameId: 'Arsitektur & Interior',
-      icon: '🏢',
-      themes: [
-        'modern architecture', 'interior design', 'minimalist spaces', 'lighting design',
-        'architectural details', 'contemporary homes', 'urban planning', 'structural elements',
-        'space utilization', 'design concepts', 'sustainable buildings', 'smart homes',
-        'cultural architecture', 'public spaces', 'residential design'
-      ]
-    }
-  };
+  business: {
+    name: 'Business & Technology',
+    nameId: 'Bisnis & Teknologi',
+    icon: '💼',
+    themes: [
+      'modern workspace with wireless laptop isolated on white background',
+      'minimalist desk setup with ergonomic keyboard isolated on white background', 
+      'sleek computer mouse with metallic finish isolated on white background',
+      'dual monitor setup with curved displays isolated on white background',
+      'premium smartphone device isolated on white background',
+      'mechanical wireless keyboard with backlit keys isolated on white background',
+      'ultra-wide monitor with thin bezels isolated on white background',
+      'black single icon of networking router isolated on white background',
+      'black single icon of USB drive isolated on white background',
+      'black single icon of cloud storage symbol isolated on white background',
+      'black single icon of gear mechanism isolated on white background',
+      'black single icon of circuit board pattern isolated on white background',
+      'black single icon of server rack equipment isolated on white background',
+      'black single icon of security lock symbol isolated on white background',
+      'black single icon of data analytics chart isolated on white background',
+      'black single icon of cryptocurrency symbol isolated on white background',
+      'black single icon of AI neural network isolated on white background',
+      'black single icon of blockchain technology isolated on white background',
+      'black single icon of digital payment interface isolated on white background',
+      'digital calculator with LCD display isolated on white background',
+      'credit card with contactless chip isolated on white background',
+      'modern office calculator isolated on white background',
+      'professional headphones with noise cancellation isolated on white background',
+      'tech gadgets arrangement with clean minimalist design',
+      'productivity tools workspace setup',
+      'innovation technology concept visualization',
+      'cybersecurity equipment display',
+      'artificial intelligence device interface',
+      '3D rendered laptop with modern design isolated on white background',
+      '3D rendered smartphone with screen interface isolated on white background',
+      '3D rendered tablet device isolated on white background',
+      '3D rendered wireless earbuds isolated on white background',
+      '3D rendered smartwatch with digital display isolated on white background',
+      'fintech payment processing equipment',
+      'quantum computing visualization elements',
+      'IoT device connectivity setup'
+    ]
+  },
+  lifestyle: {
+    name: 'Lifestyle & Wellness',
+    nameId: 'Gaya Hidup & Wellness',
+    icon: '🌱',
+    themes: [
+      'wellness products arrangement isolated on white background',
+      'self-care essentials collection isolated on white background',
+      'mindfulness meditation accessories isolated on white background',
+      'sustainable lifestyle products isolated on white background',
+      'organic skincare bottles isolated on white background',
+      'fitness equipment setup isolated on white background',
+      'yoga mat and accessories isolated on white background',
+      'healthy meal prep containers isolated on white background',
+      'spa atmosphere accessories isolated on white background',
+      'natural wellness supplements isolated on white background',
+      'aromatherapy diffuser isolated on white background',
+      'morning routine essentials isolated on white background',
+      'work-life balance workspace items',
+      'mental health support tools',
+      'sustainable eco-friendly products',
+      'minimalist lifestyle essentials',
+      'wellness tracking devices',
+      'natural lighting environment setup',
+      'home wellness corner arrangement',
+      'holistic health accessories'
+    ]
+  },
+  food: {
+    name: 'Food & Nutrition',
+    nameId: 'Makanan & Nutrisi',
+    icon: '🍽️',
+    themes: [
+      'kitchen utensils set isolated on white background',
+      'cooking equipment arrangement isolated on white background',
+      'food preparation tools isolated on white background',
+      'artisanal cooking implements isolated on white background',
+      'gourmet kitchen accessories isolated on white background',
+      'healthy meal prep containers isolated on white background',
+      'organic food storage jars isolated on white background',
+      'culinary art tools isolated on white background',
+      'beverage preparation equipment isolated on white background',
+      'seasonal cooking ingredients display',
+      'dietary supplement containers isolated on white background',
+      'food photography setup equipment',
+      'restaurant quality kitchen tools',
+      'farm-to-table preparation setup',
+      'nutrition tracking accessories',
+      'sustainable food storage solutions',
+      'fermentation equipment setup',
+      'specialty diet preparation tools',
+      'modern kitchen appliance arrangement',
+      'food styling equipment collection'
+    ]
+  },
+  abstract: {
+    name: 'Abstract & Patterns',
+    nameId: 'Abstrak & Pola',
+    icon: '🎨',
+    themes: [
+      'geometric pattern design isolated on white background',
+      'fluid dynamics visualization isolated on white background',
+      'color gradient exploration isolated on white background',
+      'texture study composition isolated on white background',
+      'minimalist pattern arrangement isolated on white background',
+      'light effect visualization isolated on white background',
+      'digital art geometric forms isolated on white background',
+      'modern aesthetic shapes isolated on white background',
+      'architectural detail patterns isolated on white background',
+      'material study textures isolated on white background',
+      'particle effect visualization isolated on white background',
+      'wave pattern design isolated on white background',
+      'crystalline structure forms isolated on white background',
+      'mathematical beauty visualization isolated on white background',
+      'optical illusion patterns isolated on white background',
+      '3D geometric shapes with metallic finish isolated on white background',
+      '3D abstract forms with soft shadows isolated on white background',
+      '3D dimensional objects with gradient colors isolated on white background',
+      'holographic effect patterns',
+      'mesh gradient compositions',
+      'dimensional design elements',
+      'future dust aesthetic patterns',
+      'grainy gradient textures'
+    ]
+  },
+  nature: {
+    name: 'Nature & Landscapes',
+    nameId: 'Alam & Lanskap',
+    icon: '🌿',
+    themes: [
+      'natural texture specimens isolated on white background',
+      'botanical study elements isolated on white background',
+      'seasonal material samples isolated on white background',
+      'natural pattern studies isolated on white background',
+      'environmental texture collection isolated on white background',
+      'water element textures isolated on white background',
+      'sky formation patterns isolated on white background',
+      'natural material composition isolated on white background',
+      'forest texture specimens isolated on white background',
+      'mountain mineral samples isolated on white background',
+      'ocean texture studies isolated on white background',
+      'desert material collection isolated on white background',
+      'natural habitat textures isolated on white background',
+      'serene landscape compositions',
+      'weather phenomena visualization',
+      'natural lighting studies',
+      'environmental scene compositions',
+      'organic pattern arrangements',
+      'seasonal change documentation',
+      'natural element studies'
+    ]
+  },
+  architecture: {
+    name: 'Architecture & Interiors',
+    nameId: 'Arsitektur & Interior',
+    icon: '🏢',
+    themes: [
+      'modern architectural elements isolated on white background',
+      'interior design accessories isolated on white background',
+      'minimalist furniture pieces isolated on white background',
+      'lighting design fixtures isolated on white background',
+      'architectural detail specimens isolated on white background',
+      'contemporary decor items isolated on white background',
+      'structural design elements isolated on white background',
+      'space utilization furniture isolated on white background',
+      'design concept models isolated on white background',
+      'sustainable building materials isolated on white background',
+      'smart home devices isolated on white background',
+      'cultural design artifacts isolated on white background',
+      'public space furniture isolated on white background',
+      'residential design elements isolated on white background',
+      'urban planning models',
+      'architectural visualization elements',
+      'building material samples',
+      'construction tool arrangements',
+      'design studio essentials',
+      'property development materials'
+    ]
+  }
+};

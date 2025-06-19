@@ -1,10 +1,11 @@
 import React from 'react';
-import { Camera, Video, Settings, Shuffle, RefreshCw, Zap } from 'lucide-react';
+import { Camera, Video, Settings, Shuffle, RefreshCw, Zap, Target } from 'lucide-react';
 import { categories } from '../../data/categories';
 import { styles, moods } from '../../data/styles';
 
 const ControlPanel = ({
   selectedCategory, setSelectedCategory,
+  selectedTheme, setSelectedTheme, // ← NEW PROPS untuk manual theme
   contentType, setContentType,
   selectedStyle, setSelectedStyle,
   selectedMood, setSelectedMood,
@@ -17,6 +18,18 @@ const ControlPanel = ({
 }) => {
   const getCategoryName = (categoryKey) => {
     return language === 'id' ? categories[categoryKey]?.nameId : categories[categoryKey]?.name;
+  };
+
+  // ← NEW: Get current category themes for dropdown
+  const getCurrentThemes = () => {
+    const categoryData = categories[selectedCategory];
+    return categoryData ? categoryData.themes : [];
+  };
+
+  // ← NEW: Format theme name for display (truncate if too long)
+  const getThemeDisplayName = (theme) => {
+    if (theme === 'auto') return t('autoRandom');
+    return theme.length > 50 ? theme.substring(0, 47) + '...' : theme;
   };
 
   return (
@@ -33,6 +46,28 @@ const ControlPanel = ({
             {Object.entries(categories).map(([key, cat]) => (
               <option key={key} value={key} className="bg-white text-gray-800">
                 {cat.icon} {getCategoryName(key)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* ← NEW: Theme Selection Dropdown */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <Target size={16} className="text-blue-500" />
+            {t('themeSelection')}
+          </label>
+          <select 
+            value={selectedTheme} 
+            onChange={(e) => setSelectedTheme(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm"
+          >
+            <option value="auto" className="bg-white text-gray-800">
+              🎲 {t('autoRandom')}
+            </option>
+            {getCurrentThemes().map((theme, index) => (
+              <option key={index} value={theme} className="bg-white text-gray-800">
+                {getThemeDisplayName(theme)}
               </option>
             ))}
           </select>
@@ -69,7 +104,7 @@ const ControlPanel = ({
           </div>
         )}
 
-        {/* Style */}
+        {/* Style Selection */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">{t('style')}</label>
           <select 
@@ -77,15 +112,15 @@ const ControlPanel = ({
             onChange={(e) => setSelectedStyle(e.target.value)}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {Object.entries(styles).map(([key, style]) => (
-              <option key={key} value={key} className="bg-white text-gray-800">
-                {t(`styles.${key}`)}
+            {Object.entries(styles).map(([key, desc]) => (
+              <option key={key} value={key} className="bg-white">
+                {language === 'id' ? t(`styles.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Mood */}
+        {/* Mood Selection */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">{t('mood')}</label>
           <select 
@@ -93,83 +128,81 @@ const ControlPanel = ({
             onChange={(e) => setSelectedMood(e.target.value)}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {Object.keys(moods).map((mood) => (
-              <option key={mood} value={mood} className="bg-white text-gray-800">
-                {t(`moods.${mood}`)}
+            {Object.entries(moods).map(([key, desc]) => (
+              <option key={key} value={key} className="bg-white">
+                {language === 'id' ? t(`moods.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
               </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Prompt Count */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">{t('promptCount')}</label>
+          <select 
+            value={promptCount} 
+            onChange={(e) => setPromptCount(Number(e.target.value))}
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          >
+            {[3, 5, 8, 10, 15, 20].map(num => (
+              <option key={num} value={num} className="bg-white">{num}</option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Prompt Count & Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <label className="text-gray-700 font-medium">{t('promptCount')}:</label>
-          <input
-            type="range"
-            min="1"
-            max="500"
-            value={promptCount}
-            onChange={(e) => setPromptCount(parseInt(e.target.value))}
-            className="w-32"
-          />
-          <span className="text-gray-800 font-bold bg-gray-100 px-3 py-1 rounded-lg">
-            {promptCount}
-          </span>
-        </div>
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-3">
+        <button
+          onClick={() => generatePrompts(false)}
+          disabled={isGenerating}
+          className="flex-1 min-w-[200px] bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:shadow-none"
+          title={t('generateTooltip')}
+        >
+          {isGenerating ? (
+            <>
+              <RefreshCw className="animate-spin" size={20} />
+              {t('generating')}
+            </>
+          ) : (
+            <>
+              <Zap size={20} />
+              {t('generatePrompts')}
+            </>
+          )}
+        </button>
 
-        <div className="flex gap-3 flex-wrap">
-          <a
-            href="https://trakteer.id/anton-prafanto-nszpm/tip"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl transition-all transform hover:scale-105 font-medium"
-            title={language === 'en' 
-              ? 'Support development - Help keep this tool free and growing!' 
-              : 'Dukung pengembangan - Bantu tools ini tetap gratis dan berkembang!'
-            }
-          >
-            <span>☕</span>
-            <span className="text-sm">{t('support')}</span>
-          </a>
-          <button
-            onClick={randomizeAll}
-            className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl transition-all"
-            title={language === 'en' 
-              ? 'Randomize ALL settings and generate mixed category prompts automatically' 
-              : 'Random SEMUA pengaturan dan buat prompt kategori campur otomatis'
-            }
-          >
-            <Zap size={16} />
-            <span className="text-sm">{t('randomAll')}</span>
-          </button>
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="flex items-center gap-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-xl transition-all"
-            title={language === 'en' ? 'Advanced settings for customization' : 'Pengaturan lanjutan untuk kustomisasi'}
-          >
-            <Settings size={16} />
-            <span className="text-sm">{t('settings')}</span>
-          </button>
-          <button
-            onClick={() => generatePrompts(false)}
-            disabled={isGenerating}
-            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-xl transition-all disabled:opacity-50"
-            title={language === 'en'
-              ? 'Generate prompts using YOUR exact settings (category, style, mood, advanced settings)'
-              : 'Buat prompt menggunakan pengaturan ANDA yang tepat (kategori, gaya, mood, pengaturan lanjutan)'
-            }
-          >
-            {isGenerating ? (
-              <RefreshCw size={16} className="animate-spin" />
-            ) : (
-              <Shuffle size={16} />
-            )}
-            <span className="text-sm">{isGenerating ? t('generating') : t('generatePrompts')}</span>
-          </button>
-        </div>
+        <button
+          onClick={randomizeAll}
+          disabled={isGenerating}
+          className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl disabled:shadow-none"
+          title={t('randomAllTooltip')}
+        >
+          <Shuffle size={20} />
+          {t('randomAll')}
+        </button>
+
+        <button
+          onClick={() => setShowSettings(!showSettings)}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center gap-3"
+        >
+          <Settings size={20} />
+          {t('settings')}
+        </button>
       </div>
+
+      {/* ← NEW: Theme Selection Info Box */}
+      {selectedTheme !== 'auto' && (
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="flex items-center gap-2 text-blue-800 text-sm">
+            <Target size={16} />
+            <span className="font-medium">{t('selectedTheme')}:</span>
+          </div>
+          <div className="text-blue-700 text-sm mt-1 break-words">
+            {selectedTheme}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

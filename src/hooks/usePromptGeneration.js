@@ -56,16 +56,22 @@ const usePromptGeneration = (settings, t) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  // COMPLETELY REWRITTEN GENERATION LOGIC - TRUE RANDOMIZATION
+  // UPDATED GENERATION LOGIC WITH MANUAL THEME SUPPORT
   const generatePrompts = useCallback((isFullRandom = false) => {
     setIsGenerating(true);
     
-    // SMART PROMPT GENERATION WITH TRUE RANDOMIZATION - Moved inside useCallback
-    const generateSmartPrompt = (category, isRandomMode, promptSettings) => {
+    // ← UPDATED: Smart prompt generation dengan manual theme support
+    const generateSmartPrompt = (category, isRandomMode, promptSettings, selectedTheme) => {
       const categoryData = categories[category];
       if (!categoryData) return null;
 
-      const selectedTheme = getRandomElement(categoryData.themes);
+      // ← NEW: Use manual theme if selected, otherwise random
+      let selectedThemeText;
+      if (selectedTheme && selectedTheme !== 'auto') {
+        selectedThemeText = selectedTheme; // Use manual selection
+      } else {
+        selectedThemeText = getRandomElement(categoryData.themes); // Random selection
+      }
       
       const lighting = isRandomMode 
         ? getRandomElement(lightingConditions)
@@ -87,11 +93,11 @@ const usePromptGeneration = (settings, t) => {
       const styleDesc = styles[promptSettings.selectedStyle];
       const moodDesc = moods[promptSettings.selectedMood];
       
-      const basePrompt = `${selectedTheme} scene, ${styleDesc}, ${lighting}, ${composition}, ${colors}, ${camera}, ${quality}, ${moodDesc}`;
+      const basePrompt = `${selectedThemeText}, ${styleDesc}, ${lighting}, ${composition}, ${colors}, ${camera}, ${quality}, ${moodDesc}`;
       
       return {
         prompt: basePrompt,
-        theme: selectedTheme,
+        theme: selectedThemeText,
         uniqueId: generateUniqueId(),
         timestamp: Date.now()
       };
@@ -108,7 +114,7 @@ const usePromptGeneration = (settings, t) => {
     };
   
     const newPrompts = [];
-    const usedThemes = new Set(); // Ensure no theme repetition within single generation
+    //const usedThemes = new Set(); // Ensure no theme repetition within single generation
   
     for (let i = 0; i < settings.promptCount; i++) {
       let categoryToUse;
@@ -121,88 +127,82 @@ const usePromptGeneration = (settings, t) => {
         categoryToUse = settings.selectedCategory;
       }
   
-      // Generate unique prompt with smart logic
-      const promptData = generateSmartPrompt(categoryToUse, isFullRandom, promptSettings);
+      // ← UPDATED: Pass selectedTheme to generation function
+      const promptData = generateSmartPrompt(
+        categoryToUse, 
+        isFullRandom, 
+        promptSettings, 
+        settings.selectedTheme // ← NEW: Pass manual theme selection
+      );
       
       if (promptData) {
-        // Ensure theme uniqueness within this generation
-        let attempts = 0;
-        while (usedThemes.has(promptData.theme) && attempts < 10) {
-          const newPromptData = generateSmartPrompt(categoryToUse, isFullRandom, promptSettings);
-          if (newPromptData && !usedThemes.has(newPromptData.theme)) {
-            promptData.theme = newPromptData.theme;
-            promptData.prompt = newPromptData.prompt;
-            break;
-          }
-          attempts++;
-        }
-        
-        usedThemes.add(promptData.theme);
-  
         let finalPrompt = promptData.prompt;
-  
-        // Format for output mode
+        
+        // Add Midjourney parameters if needed
         if (settings.outputMode === 'midjourney') {
-          // PERBAIKAN: Semua parameter dikumpulkan di akhir, tidak tersebar
-          let mjParams = [];
+          const mjParams = [];
           
-          // Tambahkan parameter dasar
-          mjParams.push(`--ar ${settings.mjAspectRatio}`);
-          mjParams.push(`--v ${settings.mjVersion}`);
+          if (settings.mjAspectRatio !== '1:1') {
+            mjParams.push(`--ar ${settings.mjAspectRatio}`);
+          }
           
-          // Tambahkan parameter opsional
-          if (settings.mjChaos > 0) mjParams.push(`--chaos ${settings.mjChaos}`);
-          if (settings.mjStylize !== 100) mjParams.push(`--s ${settings.mjStylize}`);
-          if (settings.mjQuality !== '1') mjParams.push(`--q ${settings.mjQuality}`);
-          if (settings.mjWeird > 0) mjParams.push(`--weird ${settings.mjWeird}`);
+          if (settings.mjVersion !== '6.1') {
+            mjParams.push(`--v ${settings.mjVersion}`);
+          }
           
-          // Tambahkan flag boolean
-          if (settings.mjRaw) mjParams.push('--raw');
-          if (settings.mjTile) mjParams.push('--tile');
-          if (settings.mjNiji) mjParams.push('--niji 6');
+          if (settings.mjChaos > 0) {
+            mjParams.push(`--chaos ${settings.mjChaos}`);
+          }
           
-          // Enhanced negative prompts untuk hasil yang bersih
-          const baseNegativePrompts = [
-            'people', 'animals', 'faces', 'person', 'human',
-            'text', 'words', 'letters', 'writing', 'typography', 'font',
-            'watermarks', 'watermark', 'logo', 'logos', 'brand', 'branding',
-            'signature', 'copyright', 'trademark', 'stamp',
-            'UI elements', 'buttons', 'icons', 'interface',
-            'advertisements', 'ads', 'promotional text',
-            'social media', 'website elements', 'web design',
-            'blurry', 'distortion', 'artifacts', 'noise',
-            'oversaturated', 'overexposed', 'underexposed'
+          if (settings.mjStylize !== 100) {
+            mjParams.push(`--s ${settings.mjStylize}`);
+          }
+          
+          if (settings.mjQuality !== '1') {
+            mjParams.push(`--q ${settings.mjQuality}`);
+          }
+          
+          if (settings.mjWeird > 0) {
+            mjParams.push(`--weird ${settings.mjWeird}`);
+          }
+          
+          if (settings.mjRaw) {
+            mjParams.push('--raw');
+          }
+          
+          if (settings.mjTile) {
+            mjParams.push('--tile');
+          }
+          
+          if (settings.mjNiji) {
+            mjParams.push('--niji 6');
+          }
+          
+          // Enhanced negative prompts for clean outputs - NO LIVING CREATURES
+          const negativeElements = [
+            'people', 'human', 'person', 'man', 'woman', 'child', 'face', 'hands', 'body',
+            'animals', 'pets', 'cats', 'dogs', 'birds', 'fish', 'wildlife', 'insects',
+            'plants', 'flowers', 'trees', 'leaves', 'grass', 'nature', 'organic life',
+            'text', 'logo', 'watermark', 'signature', 'writing', 'letters', 'numbers'
           ];
           
-          // Gabungkan user custom negative prompts dengan base prompts
-          let allNegativePrompts = [...baseNegativePrompts];
-          if (settings.mjNoElements.trim()) {
-            // Split user input dan tambahkan ke array
-            const userNegatives = settings.mjNoElements.split(',').map(item => item.trim()).filter(item => item);
-            allNegativePrompts = [...userNegatives, ...baseNegativePrompts];
+          if (settings.mjNoElements) {
+            const customElements = settings.mjNoElements.split(',').map(e => e.trim()).filter(e => e);
+            negativeElements.push(...customElements);
           }
           
-          // Tambahkan --no parameter
-          mjParams.push(`--no ${allNegativePrompts.join(', ')}`);
+          if (negativeElements.length > 0) {
+            mjParams.push(`--no ${negativeElements.join(', ')}`);
+          }
           
-          // FORMAT YANG BENAR: Deskripsi lengkap DULU, baru SEMUA parameter di akhir
-          finalPrompt = `/imagine prompt: ${finalPrompt} ${mjParams.join(' ')}`;
-          
+          if (mjParams.length > 0) {
+            finalPrompt = `/imagine ${finalPrompt} ${mjParams.join(' ')}`;
+          } else {
+            finalPrompt = `/imagine ${finalPrompt}`;
+          }
         } else {
-          // Standard format dengan quality terms (no 4K/8K)
-          const technicalSpecs = settings.contentType === 'video' 
-            ? 'professional videography, smooth motion, commercial quality'
-            : 'professional photography, perfect exposure, commercial use ready';
-  
-          // Enhanced negative prompts untuk Standard mode juga
-          const standardNegativePrompts = [
-            'no watermarks', 'no text overlay', 'no logos', 'no branding', 
-            'no people', 'no animals', 'no faces', 'no UI elements',
-            'no advertisements', 'no promotional text', 'no social media elements',
-            'commercial use ready', 'stock photography style', technicalSpecs
-          ].join(', ');
-  
-          finalPrompt = `${finalPrompt}, ${standardNegativePrompts}. Masterpiece quality, trending on Adobe Stock.`;
+          // For standard mode, add enhanced quality ending (REMOVED "trending on Adobe Stock")
+          finalPrompt = `${finalPrompt}. Masterpiece quality, commercial photography, studio lighting, professional composition, high-resolution.`;
         }
   
         newPrompts.push({
@@ -221,18 +221,28 @@ const usePromptGeneration = (settings, t) => {
       setPrompts(newPrompts);
       setIsGenerating(false);
       
-      // Show unique generation notification
+      // ← UPDATED: Enhanced notification dengan manual theme info
       const successMsg = document.createElement('div');
-      successMsg.textContent = t('notifications.uniqueGeneration');
-      successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-xl shadow-lg z-50';
+      const themeMode = settings.selectedTheme !== 'auto' ? 'Manual Theme' : 'Auto Random';
+      successMsg.innerHTML = `
+        <div class="text-sm font-medium">${t('notifications.uniqueGeneration')}</div>
+        <div class="text-xs mt-1 opacity-90">🎯 Theme Mode: ${themeMode}</div>
+        <div class="text-xs mt-1 opacity-90">🚫 Generated prompts exclude all living creatures. If any appear in results, please remove manually.</div>
+      `;
+      successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-3 rounded-xl shadow-lg z-50 max-w-sm';
       document.body.appendChild(successMsg);
-      setTimeout(() => document.body.removeChild(successMsg), 3000);
+      setTimeout(() => {
+        if (document.body.contains(successMsg)) {
+          document.body.removeChild(successMsg);
+        }
+      }, 5000); // Extended to 5 seconds for important message
       
     }, 800);
   
   }, [
     settings.promptCount,
     settings.selectedCategory,
+    settings.selectedTheme, // ← NEW: Add selectedTheme to dependencies
     settings.selectedStyle,
     settings.selectedMood,
     settings.lightingPreference,
@@ -269,7 +279,11 @@ const usePromptGeneration = (settings, t) => {
     successMsg.textContent = t('notifications.allCopied');
     successMsg.className = 'fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-xl shadow-lg z-50';
     document.body.appendChild(successMsg);
-    setTimeout(() => document.body.removeChild(successMsg), 3000);
+    setTimeout(() => {
+      if (document.body.contains(successMsg)) {
+        document.body.removeChild(successMsg);
+      }
+    }, 3000);
   }, [prompts, t]);
 
   const exportPrompts = useCallback(() => {

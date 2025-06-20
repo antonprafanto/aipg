@@ -169,6 +169,10 @@ const AdobeStockPromptGenerator = () => {
 
         {/* Control Panel */}
         <ControlPanel
+          manualKeyword={settings.manualKeyword}
+          setManualKeyword={settings.setManualKeyword}
+          isManualMode={settings.isManualMode}
+          setIsManualMode={settings.setIsManualMode}
           selectedCategory={settings.selectedCategory}
           setSelectedCategory={settings.setSelectedCategory}
           selectedTheme={settings.selectedTheme}

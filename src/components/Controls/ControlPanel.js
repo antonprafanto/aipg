@@ -1,11 +1,15 @@
 import React from 'react';
-import { Camera, Video, Settings, Shuffle, RefreshCw, Zap, Target } from 'lucide-react';
+import { Camera, Video, Settings, Shuffle, RefreshCw, Zap, Target, Edit3 } from 'lucide-react';
 import { categories } from '../../data/categories';
 import { styles, moods } from '../../data/styles';
 
 const ControlPanel = ({
   selectedCategory, setSelectedCategory,
   selectedTheme, setSelectedTheme,
+  // ✨ NEW: Manual keyword props
+  manualKeyword, setManualKeyword,
+  isManualMode, setIsManualMode,
+  
   contentType, setContentType,
   selectedStyle, setSelectedStyle,
   selectedMood, setSelectedMood,
@@ -29,6 +33,7 @@ const ControlPanel = ({
   // Format theme name for display (truncate if too long)
   const getThemeDisplayName = (theme) => {
     if (theme === 'auto') return t('autoRandom');
+    if (theme === 'manual') return t('manualKeyword');
     return theme.length > 50 ? theme.substring(0, 47) + '...' : theme;
   };
 
@@ -80,12 +85,22 @@ const ControlPanel = ({
             {t('themeSelection')}
           </label>
           <select 
-            value={selectedTheme} 
-            onChange={(e) => setSelectedTheme(e.target.value)}
+            value={isManualMode ? 'manual' : selectedTheme} 
+            onChange={(e) => {
+              if (e.target.value === 'manual') {
+                setIsManualMode(true);
+              } else {
+                setIsManualMode(false);
+                setSelectedTheme(e.target.value);
+              }
+            }}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm"
           >
             <option value="auto" className="bg-white text-gray-800">
               🎲 {t('autoRandom')}
+            </option>
+            <option value="manual" className="bg-white text-gray-800">
+              ✏️ {t('manualKeyword')}
             </option>
             {getCurrentThemes().map((theme, index) => (
               <option key={index} value={theme} className="bg-white text-gray-800">
@@ -155,34 +170,56 @@ const ControlPanel = ({
             {Object.keys(moods).map(key => (
               <option key={key} value={key} className="bg-white">
                 {language === 'id' && t(`moods.${key}`) !== `moods.${key}` 
-                  ? t(`moods.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
+                  ? t(`moods.${key}`) 
+                  : key.charAt(0).toUpperCase() + key.slice(1)}
               </option>
             ))}
           </select>
         </div>
 
-        {/* ✨ UPDATED: Prompt Count with extended options up to 100 */}
+        {/* Prompt Count */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">{t('promptCount')}</label>
           <select 
             value={promptCount} 
-            onChange={(e) => setPromptCount(Number(e.target.value))}
+            onChange={(e) => setPromptCount(parseInt(e.target.value))}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {getPromptCountOptions().map(num => (
-              <option key={num} value={num} className="bg-white">{num}</option>
+            {getPromptCountOptions().map(count => (
+              <option key={count} value={count} className="bg-white">
+                {count} {t('prompts')}
+              </option>
             ))}
           </select>
         </div>
       </div>
 
+      {/* ✨ NEW: Manual Keyword Input Field */}
+      {isManualMode && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+          <label className="block text-gray-700 font-medium mb-3 flex items-center gap-2">
+            <Edit3 size={16} className="text-blue-500" />
+            {t('manualKeywordInput')}
+          </label>
+          <input
+            type="text"
+            value={manualKeyword}
+            onChange={(e) => setManualKeyword(e.target.value)}
+            placeholder={t('manualKeywordPlaceholder')}
+            className="w-full bg-white border border-blue-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
+          />
+          <div className="mt-2 text-sm text-blue-600">
+            💡 {t('manualKeywordHint')}
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col sm:flex-row gap-4">
         <button
           onClick={() => generatePrompts(false)}
           disabled={isGenerating}
-          className="flex-1 min-w-[200px] bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:shadow-none"
-          title={t('generateTooltip')}
+          className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl disabled:shadow-none flex-1"
         >
           {isGenerating ? (
             <>
@@ -217,14 +254,16 @@ const ControlPanel = ({
       </div>
 
       {/* Theme Selection Info Box */}
-      {selectedTheme !== 'auto' && (
+      {(selectedTheme !== 'auto' || isManualMode) && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
           <div className="flex items-center gap-2 text-blue-800 text-sm">
             <Target size={16} />
-            <span className="font-medium">{t('selectedTheme')}:</span>
+            <span className="font-medium">
+              {isManualMode ? t('manualKeywordActive') : t('selectedTheme')}:
+            </span>
           </div>
           <div className="text-blue-700 text-sm mt-1 break-words">
-            {selectedTheme}
+            {isManualMode ? manualKeyword || t('manualKeywordEmpty') : selectedTheme}
           </div>
         </div>
       )}

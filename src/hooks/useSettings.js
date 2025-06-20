@@ -4,6 +4,10 @@ const useSettings = () => {
   // Basic Settings
   const [selectedCategory, setSelectedCategory] = useState('business');
   const [selectedTheme, setSelectedTheme] = useState('auto');
+  // ✨ NEW: Manual keyword input state
+  const [manualKeyword, setManualKeyword] = useState('');
+  const [isManualMode, setIsManualMode] = useState(false);
+  
   const [promptCount, setPromptCount] = useState(10);
   const [selectedStyle, setSelectedStyle] = useState('photorealistic');
   const [selectedMood, setSelectedMood] = useState('professional');
@@ -52,6 +56,26 @@ const useSettings = () => {
     setSelectedTheme('auto'); // Auto reset theme when category changes
   };
 
+  // ✨ NEW: Handle manual mode toggle
+  const handleManualModeToggle = (enabled) => {
+    setIsManualMode(enabled);
+    if (enabled) {
+      setSelectedTheme('manual'); // Set to manual when enabled
+    } else {
+      setSelectedTheme('auto'); // Reset to auto when disabled
+      setManualKeyword(''); // Clear manual keyword
+    }
+  };
+
+  // ✨ NEW: Handle manual keyword change
+  const handleManualKeywordChange = (keyword) => {
+    setManualKeyword(keyword);
+    if (keyword.trim()) {
+      setSelectedTheme('manual');
+      setIsManualMode(true);
+    }
+  };
+
   // ✨ FIXED: randomizeAll function - PROMPT COUNT AKAN TETAP TIDAK BERUBAH
   const randomizeAll = () => {
     // Randomize ALL settings EXCEPT promptCount
@@ -59,6 +83,9 @@ const useSettings = () => {
     const newCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
     setSelectedCategory(newCategory);
     setSelectedTheme('auto'); // Always auto for random all
+    // ✨ NEW: Reset manual mode when randomizing
+    setIsManualMode(false);
+    setManualKeyword('');
     
     const styleKeys = ['photorealistic', 'cinematic', 'minimalist', 'vintage', 'artistic', 'documentary', 'editorial'];
     setSelectedStyle(styleKeys[Math.floor(Math.random() * styleKeys.length)]);
@@ -89,6 +116,12 @@ const useSettings = () => {
     setSelectedCategory: handleCategoryChange,
     selectedTheme,
     setSelectedTheme,
+    // ✨ NEW: Manual keyword states
+    manualKeyword,
+    setManualKeyword: handleManualKeywordChange,
+    isManualMode,
+    setIsManualMode: handleManualModeToggle,
+    
     promptCount,
     setPromptCount,
     selectedStyle,

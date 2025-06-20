@@ -56,21 +56,25 @@ const usePromptGeneration = (settings, t) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  // UPDATED GENERATION LOGIC WITH MANUAL THEME SUPPORT
+  // ✨ UPDATED GENERATION LOGIC WITH MANUAL KEYWORD SUPPORT
   const generatePrompts = useCallback((isFullRandom = false) => {
     setIsGenerating(true);
     
-    // ← UPDATED: Smart prompt generation dengan manual theme support
-    const generateSmartPrompt = (category, isRandomMode, promptSettings, selectedTheme) => {
+    // ✨ UPDATED: Smart prompt generation dengan manual keyword support
+    const generateSmartPrompt = (category, isRandomMode, promptSettings, selectedTheme, manualKeyword, isManualMode) => {
       const categoryData = categories[category];
-      if (!categoryData) return null;
-
-      // ← NEW: Use manual theme if selected, otherwise random
+      
+      // ✨ NEW: Use manual keyword if provided, otherwise use theme logic
       let selectedThemeText;
-      if (selectedTheme && selectedTheme !== 'auto') {
-        selectedThemeText = selectedTheme; // Use manual selection
+      if (isManualMode && manualKeyword && manualKeyword.trim()) {
+        selectedThemeText = manualKeyword.trim(); // Use manual keyword
+      } else if (selectedTheme && selectedTheme !== 'auto' && selectedTheme !== 'manual') {
+        selectedThemeText = selectedTheme; // Use manual selection from dropdown
+      } else if (categoryData) {
+        selectedThemeText = getRandomElement(categoryData.themes); // Random selection from category
       } else {
-        selectedThemeText = getRandomElement(categoryData.themes); // Random selection
+        // Fallback if no category data available
+        selectedThemeText = 'professional product photography';
       }
       
       const lighting = isRandomMode 
@@ -114,7 +118,6 @@ const usePromptGeneration = (settings, t) => {
     };
   
     const newPrompts = [];
-    //const usedThemes = new Set(); // Ensure no theme repetition within single generation
   
     for (let i = 0; i < settings.promptCount; i++) {
       let categoryToUse;
@@ -127,12 +130,14 @@ const usePromptGeneration = (settings, t) => {
         categoryToUse = settings.selectedCategory;
       }
   
-      // ← UPDATED: Pass selectedTheme to generation function
+      // ✨ UPDATED: Pass manual keyword and mode to generation function
       const promptData = generateSmartPrompt(
         categoryToUse, 
         isFullRandom, 
         promptSettings, 
-        settings.selectedTheme // ← NEW: Pass manual theme selection
+        settings.selectedTheme,
+        settings.manualKeyword, // ✨ NEW: Pass manual keyword
+        settings.isManualMode   // ✨ NEW: Pass manual mode
       );
       
       if (promptData) {
@@ -201,7 +206,7 @@ const usePromptGeneration = (settings, t) => {
             finalPrompt = `/imagine ${finalPrompt}`;
           }
         } else {
-          // For standard mode, add enhanced quality ending (REMOVED "trending on Adobe Stock")
+          // For standard mode, add enhanced quality ending
           finalPrompt = `${finalPrompt}. Masterpiece quality, commercial photography, studio lighting, professional composition, high-resolution.`;
         }
   
@@ -221,9 +226,15 @@ const usePromptGeneration = (settings, t) => {
       setPrompts(newPrompts);
       setIsGenerating(false);
       
-      // ← UPDATED: Enhanced notification dengan manual theme info
+      // ✨ UPDATED: Enhanced notification dengan manual keyword info
       const successMsg = document.createElement('div');
-      const themeMode = settings.selectedTheme !== 'auto' ? 'Manual Theme' : 'Auto Random';
+      let themeMode = 'Auto Random';
+      if (settings.isManualMode && settings.manualKeyword) {
+        themeMode = `Manual: "${settings.manualKeyword}"`;
+      } else if (settings.selectedTheme !== 'auto') {
+        themeMode = 'Predefined Theme';
+      }
+      
       successMsg.innerHTML = `
         <div class="text-sm font-medium">${t('notifications.uniqueGeneration')}</div>
         <div class="text-xs mt-1 opacity-90">🎯 Theme Mode: ${themeMode}</div>
@@ -242,7 +253,9 @@ const usePromptGeneration = (settings, t) => {
   }, [
     settings.promptCount,
     settings.selectedCategory,
-    settings.selectedTheme, // ← NEW: Add selectedTheme to dependencies
+    settings.selectedTheme,
+    settings.manualKeyword,    // ✨ NEW: Add manual keyword to dependencies
+    settings.isManualMode,     // ✨ NEW: Add manual mode to dependencies
     settings.selectedStyle,
     settings.selectedMood,
     settings.lightingPreference,
@@ -292,12 +305,12 @@ const usePromptGeneration = (settings, t) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${settings.outputMode}-prompts-${settings.selectedCategory}-${Date.now()}.txt`;
+    a.download = `ai-prompts-${Date.now()}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [prompts, settings.outputMode, settings.selectedCategory]);
+  }, [prompts]);
 
   return {
     prompts,

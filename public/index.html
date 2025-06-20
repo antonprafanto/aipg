@@ -2,49 +2,6 @@
   <head>
     <meta charset="utf-8" />
 
-    <!-- Google AdSense Script dengan Error Handling -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9668296972373669"
-      crossorigin="anonymous"
-      onload="console.log('AdSense script loaded successfully')"
-      onerror="console.error('Failed to load AdSense script')"
-    ></script>
-
-    <ins
-      class="adsbygoogle"
-      style="display: block; text-align: center"
-      data-ad-layout="in-article"
-      data-ad-format="fluid"
-      data-ad-client="ca-pub-9668296972373669"
-      data-ad-slot="8757390409"
-    ></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-
-    <!-- Debug Script -->
-    <script>
-      window.addEventListener("load", function () {
-        console.log("Window loaded, checking AdSense...");
-        console.log(
-          "adsbygoogle available:",
-          typeof window.adsbygoogle !== "undefined"
-        );
-
-        // Test jika script loaded
-        setTimeout(() => {
-          if (typeof window.adsbygoogle === "undefined") {
-            console.error(
-              "❌ AdSense script gagal load - kemungkinan di-block atau network issue"
-            );
-          } else {
-            console.log("✅ AdSense script berhasil load");
-          }
-        }, 2000);
-      });
-    </script>
-
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#3b82f6" />

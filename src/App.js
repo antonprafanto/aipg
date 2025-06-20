@@ -182,6 +182,8 @@ const AdobeStockPromptGenerator = () => {
         <Footer t={t} />
       </div>
 
+      <component jsx="true" />
+
       {/* Floating Donation Button */}
       <FloatingButton t={t} />
 

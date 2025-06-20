@@ -182,13 +182,11 @@ const AdobeStockPromptGenerator = () => {
         <Footer t={t} />
       </div>
 
-      <component jsx="true" />
-
       {/* Floating Donation Button */}
       <FloatingButton t={t} />
 
       {/* Global Styles */}
-      <style jsx>{`
+      <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
           height: 20px;

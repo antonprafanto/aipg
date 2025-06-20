@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import AdSense from "./components/UI/AdSense";
+//import AdSense from "./components/UI/AdSense";
 
 // Components
 import Header from "./components/Header/Header";

@@ -3,7 +3,7 @@ import { useState } from 'react';
 const useSettings = () => {
   // Basic Settings
   const [selectedCategory, setSelectedCategory] = useState('business');
-  const [selectedTheme, setSelectedTheme] = useState('auto'); // ← NEW: Manual theme selection
+  const [selectedTheme, setSelectedTheme] = useState('auto');
   const [promptCount, setPromptCount] = useState(10);
   const [selectedStyle, setSelectedStyle] = useState('photorealistic');
   const [selectedMood, setSelectedMood] = useState('professional');
@@ -46,18 +46,19 @@ const useSettings = () => {
     }));
   };
 
-  // ← NEW: Smart category change handler
+  // Smart category change handler
   const handleCategoryChange = (newCategory) => {
     setSelectedCategory(newCategory);
     setSelectedTheme('auto'); // Auto reset theme when category changes
   };
 
+  // ✨ FIXED: randomizeAll function - PROMPT COUNT AKAN TETAP TIDAK BERUBAH
   const randomizeAll = () => {
-    // Randomize ALL settings for RANDOM ALL mode
+    // Randomize ALL settings EXCEPT promptCount
     const categoryKeys = ['business', 'lifestyle', 'food', 'abstract', 'nature', 'architecture'];
     const newCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
     setSelectedCategory(newCategory);
-    setSelectedTheme('auto'); // ← Always auto for random all
+    setSelectedTheme('auto'); // Always auto for random all
     
     const styleKeys = ['photorealistic', 'cinematic', 'minimalist', 'vintage', 'artistic', 'documentary', 'editorial'];
     setSelectedStyle(styleKeys[Math.floor(Math.random() * styleKeys.length)]);
@@ -66,7 +67,9 @@ const useSettings = () => {
     setSelectedMood(moodKeys[Math.floor(Math.random() * moodKeys.length)]);
     
     setContentType(Math.random() > 0.5 ? 'photo' : 'video');
-    setPromptCount(Math.floor(Math.random() * 8) + 3);
+    
+    // ✅ REMOVED: setPromptCount - Prompt count will NOT change automatically
+    // ❌ REMOVED: setPromptCount(Math.floor(Math.random() * 8) + 3);
     
     // Show randomized notification
     const msg = document.createElement('div');
@@ -83,9 +86,9 @@ const useSettings = () => {
   return {
     // Basic Settings
     selectedCategory,
-    setSelectedCategory: handleCategoryChange, // ← Use wrapper function
-    selectedTheme, // ← NEW
-    setSelectedTheme, // ← NEW
+    setSelectedCategory: handleCategoryChange,
+    selectedTheme,
+    setSelectedTheme,
     promptCount,
     setPromptCount,
     selectedStyle,

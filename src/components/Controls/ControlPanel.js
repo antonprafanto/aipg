@@ -5,7 +5,7 @@ import { styles, moods } from '../../data/styles';
 
 const ControlPanel = ({
   selectedCategory, setSelectedCategory,
-  selectedTheme, setSelectedTheme, // ← NEW PROPS untuk manual theme
+  selectedTheme, setSelectedTheme,
   contentType, setContentType,
   selectedStyle, setSelectedStyle,
   selectedMood, setSelectedMood,
@@ -20,16 +20,38 @@ const ControlPanel = ({
     return language === 'id' ? categories[categoryKey]?.nameId : categories[categoryKey]?.name;
   };
 
-  // ← NEW: Get current category themes for dropdown
+  // Get current category themes for dropdown
   const getCurrentThemes = () => {
     const categoryData = categories[selectedCategory];
     return categoryData ? categoryData.themes : [];
   };
 
-  // ← NEW: Format theme name for display (truncate if too long)
+  // Format theme name for display (truncate if too long)
   const getThemeDisplayName = (theme) => {
     if (theme === 'auto') return t('autoRandom');
     return theme.length > 50 ? theme.substring(0, 47) + '...' : theme;
+  };
+
+  // ✨ UPDATED: Extended prompt count options up to 100
+  const getPromptCountOptions = () => {
+    const options = [];
+    
+    // Low numbers (1-20): every number
+    for (let i = 1; i <= 20; i++) {
+      options.push(i);
+    }
+    
+    // Medium numbers (25-50): increments of 5
+    for (let i = 25; i <= 50; i += 5) {
+      options.push(i);
+    }
+    
+    // High numbers (60-100): increments of 10
+    for (let i = 60; i <= 100; i += 10) {
+      options.push(i);
+    }
+    
+    return options;
   };
 
   return (
@@ -51,7 +73,7 @@ const ControlPanel = ({
           </select>
         </div>
 
-        {/* ← NEW: Theme Selection Dropdown */}
+        {/* Theme Selection Dropdown */}
         <div>
           <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
             <Target size={16} className="text-blue-500" />
@@ -82,7 +104,7 @@ const ControlPanel = ({
                 onClick={() => setContentType('photo')}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl transition-all ${
                   contentType === 'photo' 
-                    ? 'bg-blue-500 text-white shadow-sm' 
+                    ? 'bg-blue-500 text-white shadow-lg' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -93,7 +115,7 @@ const ControlPanel = ({
                 onClick={() => setContentType('video')}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl transition-all ${
                   contentType === 'video' 
-                    ? 'bg-blue-500 text-white shadow-sm' 
+                    ? 'bg-blue-500 text-white shadow-lg' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -112,9 +134,11 @@ const ControlPanel = ({
             onChange={(e) => setSelectedStyle(e.target.value)}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {Object.entries(styles).map(([key, desc]) => (
+            {Object.keys(styles).map(key => (
               <option key={key} value={key} className="bg-white">
-                {language === 'id' ? t(`styles.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
+                {language === 'id' && t(`styles.${key}`) !== `styles.${key}` 
+                  ? t(`styles.${key}`) 
+                  : key.charAt(0).toUpperCase() + key.slice(1)}
               </option>
             ))}
           </select>
@@ -128,15 +152,16 @@ const ControlPanel = ({
             onChange={(e) => setSelectedMood(e.target.value)}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {Object.entries(moods).map(([key, desc]) => (
+            {Object.keys(moods).map(key => (
               <option key={key} value={key} className="bg-white">
-                {language === 'id' ? t(`moods.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
+                {language === 'id' && t(`moods.${key}`) !== `moods.${key}` 
+                  ? t(`moods.${key}`) : key.charAt(0).toUpperCase() + key.slice(1)}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Prompt Count */}
+        {/* ✨ UPDATED: Prompt Count with extended options up to 100 */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">{t('promptCount')}</label>
           <select 
@@ -144,7 +169,7 @@ const ControlPanel = ({
             onChange={(e) => setPromptCount(Number(e.target.value))}
             className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           >
-            {[3, 5, 8, 10, 15, 20].map(num => (
+            {getPromptCountOptions().map(num => (
               <option key={num} value={num} className="bg-white">{num}</option>
             ))}
           </select>
@@ -191,7 +216,7 @@ const ControlPanel = ({
         </button>
       </div>
 
-      {/* ← NEW: Theme Selection Info Box */}
+      {/* Theme Selection Info Box */}
       {selectedTheme !== 'auto' && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
           <div className="flex items-center gap-2 text-blue-800 text-sm">

@@ -1,22 +1,23 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from "react";
+import AdSense from "./components/UI/AdSense";
 
 // Components
-import Header from './components/Header/Header';
-import InfoSections from './components/InfoSections/InfoSections';
-import OutputModeSelector from './components/OutputMode/OutputModeSelector';
-import MidjourneySettings from './components/Settings/MidJourneySettings';
-import AdvancedSettings from './components/Settings/AdvancedSettings';
-import ControlPanel from './components/Controls/ControlPanel';
-import PromptsDisplay from './components/Results/PromptsDisplay';
-import Footer from './components/Footer/Footer';
-import FloatingButton from './components/UI/FloatingButton';
+import Header from "./components/Header/Header";
+import InfoSections from "./components/InfoSections/InfoSections";
+import OutputModeSelector from "./components/OutputMode/OutputModeSelector";
+import MidjourneySettings from "./components/Settings/MidJourneySettings";
+import AdvancedSettings from "./components/Settings/AdvancedSettings";
+import ControlPanel from "./components/Controls/ControlPanel";
+import PromptsDisplay from "./components/Results/PromptsDisplay";
+import Footer from "./components/Footer/Footer";
+import FloatingButton from "./components/UI/FloatingButton";
 
 // Hooks
-import useSettings from './hooks/useSettings';
-import usePromptGeneration from './hooks/usePromptGeneration';
+import useSettings from "./hooks/useSettings";
+import usePromptGeneration from "./hooks/usePromptGeneration";
 
 // Data
-import { translations } from './data/translations';
+import { translations } from "./data/translations";
 
 const AdobeStockPromptGenerator = () => {
   // Custom Hooks
@@ -29,36 +30,46 @@ const AdobeStockPromptGenerator = () => {
     copyPrompt,
     copyAllPrompts,
     exportPrompts,
-  } = usePromptGeneration(settings, useCallback((key) => {
-    const keys = key.split('.');
-    let value = translations[settings.language];
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return value || key;
-  }, [settings.language]));
+  } = usePromptGeneration(
+    settings,
+    useCallback(
+      (key) => {
+        const keys = key.split(".");
+        let value = translations[settings.language];
+        for (const k of keys) {
+          value = value?.[k];
+        }
+        return value || key;
+      },
+      [settings.language]
+    )
+  );
 
   // Translation function
-  const t = useCallback((key) => {
-    const keys = key.split('.');
-    let value = translations[settings.language];
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return value || key;
-  }, [settings.language]);
+  const t = useCallback(
+    (key) => {
+      const keys = key.split(".");
+      let value = translations[settings.language];
+      for (const k of keys) {
+        value = value?.[k];
+      }
+      return value || key;
+    },
+    [settings.language]
+  );
 
   // Enhanced randomizeAll that auto-generates prompts
   const handleRandomizeAll = () => {
     settings.randomizeAll();
-    
+
     // Show success message
-    const successMsg = document.createElement('div');
-    successMsg.textContent = t('notifications.randomized');
-    successMsg.className = 'fixed top-4 right-4 bg-indigo-500 text-white px-4 py-2 rounded-xl shadow-lg z-50';
+    const successMsg = document.createElement("div");
+    successMsg.textContent = t("notifications.randomized");
+    successMsg.className =
+      "fixed top-4 right-4 bg-indigo-500 text-white px-4 py-2 rounded-xl shadow-lg z-50";
     document.body.appendChild(successMsg);
     setTimeout(() => document.body.removeChild(successMsg), 3000);
-    
+
     // Auto-generate prompts after randomization with TRUE RANDOM mode (mixed categories)
     setTimeout(() => {
       generatePrompts(true); // Pass true to indicate full random mode
@@ -73,9 +84,8 @@ const AdobeStockPromptGenerator = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       <div className="container mx-auto max-w-7xl">
-        
         {/* Header Section */}
-        <Header 
+        <Header
           language={settings.language}
           setLanguage={settings.setLanguage}
           t={t}
@@ -88,6 +98,21 @@ const AdobeStockPromptGenerator = () => {
           t={t}
         />
 
+        {/* Iklan Banner Top - Setelah Info */}
+        {/*<div className="my-8">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            {/*<p className="text-sm text-yellow-800">
+              🧪 <strong>Testing AdSense:</strong> Pastikan ganti dengan ad slot
+              yang valid dari dashboard Google AdSense
+            </p>*
+          </div>
+          <AdSense
+            adSlot="8757390409"
+            adFormat="auto"
+            className="mx-auto"
+          />
+        </div>*/}
+
         {/* Output Mode Selection */}
         <OutputModeSelector
           outputMode={settings.outputMode}
@@ -96,7 +121,7 @@ const AdobeStockPromptGenerator = () => {
         />
 
         {/* Midjourney Settings Panel */}
-        {settings.outputMode === 'midjourney' && (
+        {settings.outputMode === "midjourney" && (
           <MidjourneySettings
             mjVersion={settings.mjVersion}
             setMjVersion={settings.setMjVersion}

@@ -1,13 +1,12 @@
+// ✅ BACKWARD COMPATIBLE: Support both old format (for UI) and new format (for generation)
+
+// For UI components (ControlPanel, etc.) - Keep as strings for dropdown labels
 export const styles = {
   photorealistic: "Photorealistic, professional photography, sharp focus, detailed textures",
-  cinematic:
-    "Cinematic style, dramatic lighting, film grain, professional color grading, dimensional depth",
-  minimalist:
-    "Minimalist aesthetic, clean composition, negative space, simple elegance, isolated objects",
-  vintage:
-    "Modern vintage style, warm tones, nostalgic feel, contemporary interpretation",
-  artistic:
-    "Artistic interpretation, creative composition, unique perspective, visual interest, premium quality",
+  cinematic: "Cinematic style, dramatic lighting, film grain, professional color grading, dimensional depth",
+  minimalist: "Minimalist aesthetic, clean composition, negative space, simple elegance, isolated objects",
+  vintage: "Modern vintage style, warm tones, nostalgic feel, contemporary interpretation",
+  artistic: "Artistic interpretation, creative composition, unique perspective, visual interest, premium quality",
   documentary: "Documentary style, authentic, candid, real-world photography, professional documentation",
   editorial: "Editorial quality, magazine-style, polished, commercial appeal, business-ready",
 };
@@ -20,6 +19,97 @@ export const moods = {
   natural: "organic, natural, authentic, earthy, genuine",
   modern: "contemporary, sleek, cutting-edge, progressive, innovative",
   warm: "inviting, cozy, comfortable, friendly, approachable",
+};
+
+// ✅ NEW: Separate arrays for TRUE randomization in prompt generation
+export const styleVariations = {
+  photorealistic: [
+    "Photorealistic, professional photography, sharp focus, detailed textures",
+    "Ultra-realistic rendering, commercial quality, pristine detail capture",
+    "Hyper-realistic photography, studio precision, professional documentation",
+    "Photographic realism, crisp focus, commercial-grade imagery"
+  ],
+  cinematic: [
+    "Cinematic style, dramatic lighting, film grain, professional color grading, dimensional depth",
+    "Film-style composition, theatrical lighting, movie-quality rendering, cinematic atmosphere", 
+    "Cinematic excellence, dramatic shadows, professional film aesthetics, storytelling depth",
+    "Movie-style photography, cinematic depth, professional storytelling, film-grade quality"
+  ],
+  minimalist: [
+    "Minimalist aesthetic, clean composition, negative space, simple elegance, isolated objects",
+    "Clean minimal design, spacious layout, sophisticated simplicity, uncluttered perfection",
+    "Minimalist perfection, refined composition, elegant restraint, purposeful spacing",
+    "Simple minimalist style, balanced composition, sophisticated restraint, clean elegance"
+  ],
+  vintage: [
+    "Modern vintage style, warm tones, nostalgic feel, contemporary interpretation",
+    "Retro-inspired design, classic aesthetics, timeless appeal, heritage quality",
+    "Vintage charm, classic photography style, nostalgic atmosphere, refined heritage", 
+    "Contemporary vintage, classic quality, timeless sophistication, retro elegance"
+  ],
+  artistic: [
+    "Artistic interpretation, creative composition, unique perspective, visual interest, premium quality",
+    "Creative artistic vision, innovative composition, expressive imagery, sophisticated artistry",
+    "Artistic excellence, creative direction, visually compelling design, fine art quality",
+    "Fine art photography, creative expression, sophisticated artistry, innovative perspective"
+  ],
+  documentary: [
+    "Documentary style, authentic, candid, real-world photography, professional documentation",
+    "Journalistic approach, authentic storytelling, professional documentation, truthful capture",
+    "Documentary excellence, authentic representation, real-world imagery, professional journalism",
+    "Authentic documentary, professional journalism, real-world precision, candid excellence"
+  ],
+  editorial: [
+    "Editorial quality, magazine-style, polished, commercial appeal, business-ready", 
+    "Publication-ready imagery, editorial sophistication, professional standards, premium presentation",
+    "High-end editorial style, magazine-worthy quality, commercial sophistication, publication excellence",
+    "Editorial perfection, commercial elegance, professional publication standards, premium quality"
+  ]
+};
+
+export const moodVariations = {
+  professional: [
+    "professional, clean, corporate, sophisticated, business-appropriate",
+    "executive-level presentation, polished corporate aesthetics, business excellence", 
+    "professional standards, corporate sophistication, business-grade quality",
+    "commercial professionalism, corporate elegance, business-ready presentation"
+  ],
+  calm: [
+    "calm, peaceful, serene, tranquil, zen-like, balanced",
+    "soothing atmosphere, peaceful ambiance, serene composition, tranquil elegance",
+    "zen-inspired calm, peaceful sophistication, balanced harmony, serene quality",
+    "tranquil mood, calming presence, peaceful refinement, serene balance"
+  ],
+  energetic: [
+    "dynamic, vibrant, energetic, motivational, engaging",
+    "high-energy composition, vibrant dynamism, motivational impact, engaging vitality",
+    "energetic excellence, dynamic engagement, powerful motivation, vibrant energy",
+    "dynamic vitality, energetic sophistication, vibrant motivation, engaging dynamism"
+  ],
+  luxurious: [
+    "luxurious, premium, high-end, elegant, sophisticated", 
+    "luxury excellence, premium sophistication, high-end elegance, opulent quality",
+    "sophisticated luxury, elegant premium refinement, luxurious presentation, high-end quality",
+    "opulent sophistication, luxury standards, premium elegance, high-end refinement"
+  ],
+  natural: [
+    "organic, natural, authentic, earthy, genuine",
+    "natural authenticity, organic composition, genuine character, earthy sophistication",
+    "authentic presentation, natural elegance, organic refinement, genuine quality",
+    "earthy excellence, natural purity, authentic sophistication, organic elegance"
+  ],
+  modern: [
+    "contemporary, sleek, cutting-edge, progressive, innovative",
+    "modern sophistication, contemporary excellence, innovative design, progressive quality",
+    "cutting-edge aesthetics, sleek innovation, modern precision, contemporary refinement",
+    "progressive elegance, innovative sophistication, modern excellence, contemporary style"
+  ],
+  warm: [
+    "inviting, cozy, comfortable, friendly, approachable",
+    "warm atmosphere, cozy elegance, comfortable sophistication, friendly presentation",
+    "inviting charm, approachable quality, comfortable refinement, warm sophistication",
+    "cozy refinement, warm elegance, friendly sophistication, approachable excellence"
+  ]
 };
 
 export const lightingConditions = [
@@ -108,6 +198,19 @@ export const qualityTerms = [
   "business-ready photography",
   "isolated white background perfection",
   "studio-grade professional quality"
+];
+
+// ✅ NEW: Random quality endings to replace the hardcoded one
+// ✅ NEW: Random quality endings to replace the hardcoded one
+export const qualityEndings = [
+  "Masterpiece quality, commercial photography, studio lighting, professional composition, high-resolution",
+  "Premium commercial quality, professional studio setup, crystal-clear resolution, business-ready assets", 
+  "Award-winning photography standards, professional lighting design, ultra-high definition, commercial excellence",
+  "Studio-grade professional quality, commercial photography specifications, pristine resolution, market-ready",
+  "Professional commercial standards, expert lighting arrangement, high-definition precision, publication-ready",
+  "Commercial photography excellence, professional studio environment, ultra-clear resolution, business-grade quality",
+  "Professional imaging standards, commercial-quality lighting, high-resolution capture, industry-ready assets",
+  "Expert photography quality, commercial studio setup, professional-grade resolution, business-standard imagery"
 ];
 
 export const mjAspectRatios = [

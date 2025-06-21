@@ -1,6 +1,17 @@
 import { useState, useCallback } from 'react';
 import { categories } from '../data/categories';
-import { styles, moods, lightingConditions, compositions, colorPalettes, cameraSettings, qualityTerms } from '../data/styles';
+import { 
+  styles, 
+  moods, 
+  styleVariations, 
+  moodVariations, 
+  lightingConditions, 
+  compositions, 
+  colorPalettes, 
+  cameraSettings, 
+  qualityTerms, 
+  qualityEndings 
+} from '../data/styles';
 
 // UTILITY FUNCTIONS FOR TRUE RANDOMIZATION (Outside hook to avoid dependencies)
 const getRandomElement = (array) => {
@@ -56,11 +67,11 @@ const usePromptGeneration = (settings, t) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  // ✨ UPDATED GENERATION LOGIC WITH MANUAL KEYWORD SUPPORT
+  // ✨ UPDATED GENERATION LOGIC WITH MANUAL KEYWORD SUPPORT + TRUE RANDOMIZATION
   const generatePrompts = useCallback((isFullRandom = false) => {
     setIsGenerating(true);
     
-    // ✨ UPDATED: Smart prompt generation dengan manual keyword support
+    // ✅ FIXED: Smart prompt generation with styleVariations and moodVariations
     const generateSmartPrompt = (category, isRandomMode, promptSettings, selectedTheme, manualKeyword, isManualMode) => {
       const categoryData = categories[category];
       
@@ -76,6 +87,18 @@ const usePromptGeneration = (settings, t) => {
         // Fallback if no category data available
         selectedThemeText = 'professional product photography';
       }
+      
+      // ✅ FIXED: Use styleVariations for randomization, fallback to styles for default
+      const styleOptions = styleVariations[promptSettings.selectedStyle];
+      const styleDesc = styleOptions 
+        ? getRandomElement(styleOptions) 
+        : styles[promptSettings.selectedStyle];
+      
+      // ✅ FIXED: Use moodVariations for randomization, fallback to moods for default
+      const moodOptions = moodVariations[promptSettings.selectedMood];
+      const moodDesc = moodOptions
+        ? getRandomElement(moodOptions)
+        : moods[promptSettings.selectedMood];
       
       const lighting = isRandomMode 
         ? getRandomElement(lightingConditions)
@@ -93,9 +116,8 @@ const usePromptGeneration = (settings, t) => {
         ? getRandomElement(cameraSettings)
         : getCameraFromSettings(promptSettings.focusStyle);
 
+      // ✅ ALWAYS random quality terms
       const quality = getRandomElement(qualityTerms);
-      const styleDesc = styles[promptSettings.selectedStyle];
-      const moodDesc = moods[promptSettings.selectedMood];
       
       const basePrompt = `${selectedThemeText}, ${styleDesc}, ${lighting}, ${composition}, ${colors}, ${camera}, ${quality}, ${moodDesc}`;
       
@@ -206,8 +228,9 @@ const usePromptGeneration = (settings, t) => {
             finalPrompt = `/imagine ${finalPrompt}`;
           }
         } else {
-          // For standard mode, add enhanced quality ending
-          finalPrompt = `${finalPrompt}. Masterpiece quality, commercial photography, studio lighting, professional composition, high-resolution.`;
+          // ✅ FIXED: Random quality ending instead of hardcoded
+          const randomEnding = getRandomElement(qualityEndings);
+          finalPrompt = `${finalPrompt}. ${randomEnding}`;
         }
   
         newPrompts.push({

@@ -76,31 +76,51 @@ const useSettings = () => {
     }
   };
 
-  // ✨ FIXED: randomizeAll function - PROMPT COUNT AKAN TETAP TIDAK BERUBAH
+  // ✅ FIXED: Complete randomizeAll function - BENAR-BENAR RANDOM!
   const randomizeAll = () => {
-    // Randomize ALL settings EXCEPT promptCount
+    // 🎯 BASIC SETTINGS - Yang harus dirandom
     const categoryKeys = ['business', 'lifestyle', 'food', 'abstract', 'nature', 'architecture'];
     const newCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
     setSelectedCategory(newCategory);
     setSelectedTheme('auto'); // Always auto for random all
-    // ✨ NEW: Reset manual mode when randomizing
+    
+    // Reset manual mode when randomizing
     setIsManualMode(false);
     setManualKeyword('');
     
+    // Randomize styles and moods
     const styleKeys = ['photorealistic', 'cinematic', 'minimalist', 'vintage', 'artistic', 'documentary', 'editorial'];
     setSelectedStyle(styleKeys[Math.floor(Math.random() * styleKeys.length)]);
     
     const moodKeys = ['professional', 'calm', 'energetic', 'luxurious', 'natural', 'modern', 'warm'];
     setSelectedMood(moodKeys[Math.floor(Math.random() * moodKeys.length)]);
     
-    setContentType(Math.random() > 0.5 ? 'photo' : 'video');
+    // ✅ FIXED: Randomize Advanced Settings (yang sebelumnya tidak dirandom)
+    const colorOptions = ['vibrant', 'natural', 'muted'];
+    setColorEnhancement(colorOptions[Math.floor(Math.random() * colorOptions.length)]);
     
-    // ✅ REMOVED: setPromptCount - Prompt count will NOT change automatically
-    // ❌ REMOVED: setPromptCount(Math.floor(Math.random() * 8) + 3);
+    const qualityOptions = ['professional', 'commercial', 'artistic', 'editorial'];
+    setQualityPriority(qualityOptions[Math.floor(Math.random() * qualityOptions.length)]);
+    
+    const focusOptions = ['shallow', 'deep', 'selective', 'macro'];
+    setFocusStyle(focusOptions[Math.floor(Math.random() * focusOptions.length)]);
+    
+    const lightingOptions = ['golden', 'natural', 'studio', 'mixed'];
+    setLightingPreference(lightingOptions[Math.floor(Math.random() * lightingOptions.length)]);
+    
+    const compositionOptions = ['thirds', 'centered', 'dynamic', 'minimalist'];
+    setCompositionStyle(compositionOptions[Math.floor(Math.random() * compositionOptions.length)]);
+    
+    // 🚫 YANG TIDAK BOLEH DIRANDOM (User-controlled only):
+    // ❌ promptCount - User yang kontrol
+    // ❌ contentType - User yang kontrol (photo/video) - FIXED: TIDAK DIRANDOM LAGI
+    // ❌ outputMode - User yang kontrol (standard/midjourney)
+    // ❌ language - User yang kontrol (en/id)
+    // ❌ Semua Midjourney settings - User yang kontrol
     
     // Show randomized notification
     const msg = document.createElement('div');
-    msg.textContent = '🎲 All settings randomized & generating unique mixed category prompts...';
+    msg.textContent = '🎲 All settings randomized completely & generating unique mixed category prompts...';
     msg.className = 'fixed top-4 right-4 bg-purple-500 text-white px-4 py-2 rounded-xl shadow-lg z-50';
     document.body.appendChild(msg);
     setTimeout(() => {

@@ -292,18 +292,27 @@ const usePromptGeneration = (settings, t) => {
         setPrompts(newPrompts);
         setIsGenerating(false);
 
-        let themeMode = "Auto Random";
+        // ✅ FIXED: Gunakan terjemahan yang benar
+        let themeMode = t("notifications.autoRandom");
         if (settings.isManualMode && settings.manualKeyword) {
-          themeMode = `Manual: "${settings.manualKeyword}"`;
+          themeMode = `${t("notifications.manual")}: "${
+            settings.manualKeyword
+          }"`;
         } else if (settings.selectedTheme !== "auto") {
-          themeMode = "Predefined Theme";
+          themeMode = t("notifications.predefinedTheme");
         }
 
         const generationMessage = `
-  <div class="text-sm font-medium">${t("notifications.uniqueGeneration")}</div>
-  <div class="text-xs mt-1 opacity-90">🎯 Theme Mode: ${themeMode}</div>
-  <div class="text-xs mt-1 opacity-90">🚫 Generated prompts exclude all living creatures. If any appear in results, please remove manually.</div>
-`;
+      <div class="text-sm font-medium">${t(
+        "notifications.uniqueGeneration"
+      )}</div>
+      <div class="text-xs mt-1 opacity-90">🎯 ${t(
+        "notifications.themeMode"
+      )}: ${themeMode}</div>
+      <div class="text-xs mt-1 opacity-90">🚫 ${t(
+        "notifications.warningText"
+      )}</div>
+      `;
         notificationManager.generation(generationMessage);
       }, 800);
     },

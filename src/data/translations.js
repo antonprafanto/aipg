@@ -168,6 +168,13 @@ export const translations = {
       allCopied: "📋 All prompts copied to clipboard!",
       uniqueGeneration:
         "✨ Generated completely unique prompts with July 2025 trending assets - no repetition!",
+
+      themeMode: "Theme Mode",
+      autoRandom: "Auto Random",
+      manual: "Manual",
+      predefinedTheme: "Predefined Theme",
+      warningText:
+        "Generated prompts exclude all living creatures. If any appear in results, please remove manually.",
     },
 
     advancedSettings: "Advanced Settings",
@@ -377,6 +384,13 @@ export const translations = {
       allCopied: "📋 Semua prompt berhasil di-copy ke clipboard!",
       uniqueGeneration:
         "✨ Berhasil membuat prompt unik dengan asset trending Juli 2025 - tidak ada pengulangan!",
+
+      themeMode: "Mode Tema",
+      autoRandom: "Otomatis Random",
+      manual: "Manual",
+      predefinedTheme: "Tema yang Dipilih",
+      warningText:
+        "Prompt yang dibuat mengecualikan semua makhluk hidup. Jika ada yang muncul di hasil, mohon dihapus manual.",
     },
 
     advancedSettings: "Pengaturan Lanjutan",

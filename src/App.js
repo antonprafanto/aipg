@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 //import AdSense from "./components/UI/AdSense";
+import notificationManager from "./utils/notificationManager";
 
 // Components
 import Header from "./components/Header/Header";
@@ -63,12 +64,7 @@ const AdobeStockPromptGenerator = () => {
     settings.randomizeAll();
 
     // Show success message
-    const successMsg = document.createElement("div");
-    successMsg.textContent = t("notifications.randomized");
-    successMsg.className =
-      "fixed top-4 right-4 bg-indigo-500 text-white px-4 py-2 rounded-xl shadow-lg z-50";
-    document.body.appendChild(successMsg);
-    setTimeout(() => document.body.removeChild(successMsg), 3000);
+    notificationManager.random(t("notifications.randomized"));
 
     // Auto-generate prompts after randomization with TRUE RANDOM mode (mixed categories)
     setTimeout(() => {

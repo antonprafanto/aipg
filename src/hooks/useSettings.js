@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import notificationManager from '../utils/notificationManager';
+
 
 const useSettings = () => {
   // Basic Settings
@@ -119,15 +121,8 @@ const useSettings = () => {
     // ❌ Semua Midjourney settings - User yang kontrol
     
     // Show randomized notification
-    const msg = document.createElement('div');
-    msg.textContent = '🎲 All settings randomized completely & generating unique mixed category prompts...';
-    msg.className = 'fixed top-4 right-4 bg-purple-500 text-white px-4 py-2 rounded-xl shadow-lg z-50';
-    document.body.appendChild(msg);
-    setTimeout(() => {
-      if (document.body.contains(msg)) {
-        document.body.removeChild(msg);
-      }
-    }, 3000);
+    notificationManager.random('🎲 All settings randomized completely & generating unique mixed category prompts...');
+
   };
 
   return {

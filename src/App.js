@@ -1,4 +1,6 @@
+// src/App.js
 import React, { useEffect, useCallback } from "react";
+import { ThemeProvider } from "./contexts/ThemeContext";
 //import AdSense from "./components/UI/AdSense";
 import notificationManager from "./utils/notificationManager";
 
@@ -20,7 +22,7 @@ import usePromptGeneration from "./hooks/usePromptGeneration";
 // Data
 import { translations } from "./data/translations";
 
-const AdobeStockPromptGenerator = () => {
+const AdobeStockPromptGeneratorContent = () => {
   // Custom Hooks
   const settings = useSettings();
   const {
@@ -77,8 +79,15 @@ const AdobeStockPromptGenerator = () => {
     generatePrompts(false); // false = use user settings, not random
   }, [generatePrompts]);
 
+  // Notification cleanup
+  useEffect(() => {
+    return () => {
+      notificationManager.clearAll();
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header Section */}
         <Header
@@ -87,7 +96,7 @@ const AdobeStockPromptGenerator = () => {
           t={t}
         />
 
-        {/* Info Sections */}
+        {/* Info Sections - FIXED: Pastikan props diteruskan dengan benar */}
         <InfoSections
           expandedSections={settings.expandedSections}
           toggleSection={settings.toggleSection}
@@ -96,14 +105,14 @@ const AdobeStockPromptGenerator = () => {
 
         {/* Iklan Banner Top - Setelah Info */}
         {/*<div className="my-8">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-            {/*<p className="text-sm text-yellow-800">
+          <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-4">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
               🧪 <strong>Testing AdSense:</strong> Pastikan ganti dengan ad slot
               yang valid dari dashboard Google AdSense
-            </p>*
+            </p>
           </div>
           <AdSense
-            adSlot="8757390409"
+            adSlot="8757390485"
             adFormat="auto"
             className="mx-auto"
           />
@@ -150,29 +159,28 @@ const AdobeStockPromptGenerator = () => {
           setShowSettings={settings.setShowSettings}
           colorEnhancement={settings.colorEnhancement}
           setColorEnhancement={settings.setColorEnhancement}
-          qualityPriority={settings.qualityPriority}
-          setQualityPriority={settings.setQualityPriority}
-          focusStyle={settings.focusStyle}
-          setFocusStyle={settings.setFocusStyle}
-          lightingPreference={settings.lightingPreference}
-          setLightingPreference={settings.setLightingPreference}
-          compositionStyle={settings.compositionStyle}
-          setCompositionStyle={settings.setCompositionStyle}
-          generatePrompts={generatePrompts}
-          t={t}
+          lightingStyle={settings.lightingStyle}
+          setLightingStyle={settings.setLightingStyle}
+          artStyle={settings.artStyle}
+          setArtStyle={settings.setArtStyle}
+          cameraAngle={settings.cameraAngle}
+          setCameraAngle={settings.setCameraAngle}
+          numberOfPrompts={settings.numberOfPrompts}
+          setNumberOfPrompts={settings.setNumberOfPrompts}
           language={settings.language}
+          t={t}
         />
 
         {/* Control Panel */}
         <ControlPanel
-          manualKeyword={settings.manualKeyword}
-          setManualKeyword={settings.setManualKeyword}
-          isManualMode={settings.isManualMode}
-          setIsManualMode={settings.setIsManualMode}
           selectedCategory={settings.selectedCategory}
           setSelectedCategory={settings.setSelectedCategory}
           selectedTheme={settings.selectedTheme}
           setSelectedTheme={settings.setSelectedTheme}
+          manualKeyword={settings.manualKeyword}
+          setManualKeyword={settings.setManualKeyword}
+          isManualMode={settings.isManualMode}
+          setIsManualMode={settings.setIsManualMode}
           contentType={settings.contentType}
           setContentType={settings.setContentType}
           selectedStyle={settings.selectedStyle}
@@ -221,11 +229,18 @@ const AdobeStockPromptGenerator = () => {
           cursor: pointer;
           box-shadow: 0 0 2px 0 rgba(0,0,0,0.2);
         }
+        .dark .slider::-webkit-slider-thumb {
+          background: #60a5fa;
+          box-shadow: 0 0 2px 0 rgba(255,255,255,0.1);
+        }
         .slider::-webkit-slider-track {
           height: 8px;
           cursor: pointer;
           background: #e5e7eb;
           border-radius: 4px;
+        }
+        .dark .slider::-webkit-slider-track {
+          background: #374151;
         }
         
         @keyframes pulse {
@@ -244,6 +259,15 @@ const AdobeStockPromptGenerator = () => {
         }
       `}</style>
     </div>
+  );
+};
+
+// Main App component with ThemeProvider wrapper
+const AdobeStockPromptGenerator = () => {
+  return (
+    <ThemeProvider>
+      <AdobeStockPromptGeneratorContent />
+    </ThemeProvider>
   );
 };
 

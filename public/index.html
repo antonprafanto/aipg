@@ -1,126 +1,209 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#3b82f6" />
-
-    <!-- SEO Meta Tags -->
-    <title>
-      AI Prompt Generator - Adobe Stock & Midjourney V7 | Free Professional Tool
-    </title>
-    <meta
-      name="description"
-      content="Generate high-quality AI prompts for Adobe Stock & Midjourney V7. Free tool with trending categories, advanced parameters, and commercial-ready prompts. Perfect for designers, artists, and content creators."
-    />
-    <meta
-      name="keywords"
-      content="AI prompt generator, Midjourney prompts, Adobe Stock, AI art generator, prompt engineering, Midjourney V7, commercial prompts, stock photography prompts"
-    />
-    <meta name="author" content="Anton Prafanto" />
-    <meta name="robots" content="index, follow" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <!--<meta property="og:url" content="https://micro-boy.github.io/aipg/" /> -->
-    <meta
-      property="og:title"
-      content="AI Prompt Generator - Adobe Stock & Midjourney V7"
-    />
-    <meta
-      property="og:description"
-      content="Free professional AI prompt generator for Adobe Stock & Midjourney V7 with advanced parameters and commercial-ready outputs."
-    />
-    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
-    <meta property="og:site_name" content="AI Prompt Generator" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <!--<meta property="twitter:url" content="https://micro-boy.github.io/Prompt_Generator_2025/" /> -->
-    <meta
-      property="twitter:title"
-      content="AI Prompt Generator - Adobe Stock & Midjourney V7"
-    />
-    <meta
-      property="twitter:description"
-      content="Free professional AI prompt generator for Adobe Stock & Midjourney V7"
-    />
-    <meta property="twitter:image" content="%PUBLIC_URL%/og-image.png" />
-
-    <!-- Favicon and Icons -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="%PUBLIC_URL%/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="%PUBLIC_URL%/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="%PUBLIC_URL%/favicon-16x16.png"
-    />
-
-    <link href="./output.css" rel="stylesheet" />
-
-    <!-- Preload critical resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "AI Prompt Generator",
-        "description": "Professional AI prompt generator for Adobe Stock & Midjourney V7 with advanced parameters and commercial-ready outputs",
-        "url": "https://micro-boy.github.io/aipg/",
-        "applicationCategory": "DesignApplication",
-        "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "creator": {
-          "@type": "Person",
-          "name": "Anton Prafanto"
-        },
-        "featureList": [
-          "Adobe Stock prompt generation",
-          "Midjourney V7 support",
-          "Advanced parameter control",
-          "Commercial-ready prompts",
-          "Bilingual support (EN/ID)",
-          "Export and batch generation"
-        ]
-      }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Penting - Perpindahan Website</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #667eea;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .announcement {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .announcement h2 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .announcement p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .new-url {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .icon {
+                font-size: 3rem;
+            }
+            
+            .button {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📢</div>
+        
+        <h1>Pengumuman Penting!</h1>
+        
+        <div class="announcement">
+            <h2>🚀 AI Prompt Generator Pindah Alamat</h2>
+            <p><strong>Halo teman-teman!</strong></p>
+            <p>Kami ingin memberitahu bahwa layanan <strong>AI Prompt Generator</strong> telah pindah ke alamat baru yang lebih baik.</p>
+            
+            <div class="new-url">
+                🌐 Alamat Baru: https://apcloud.my.id
+            </div>
+            
+            <p>Di alamat baru ini, kalian akan mendapatkan:</p>
+            <p>✅ Layanan yang lebih cepat dan stabil<br>
+            ✅ Fitur-fitur baru yang lebih canggih<br>
+            ✅ Tampilan yang lebih fresh dan mudah digunakan</p>
+        </div>
+        
+        <div class="warning">
+            ⚠️ <strong>Penting!</strong> Website ini akan segera ditutup. Silakan simpan alamat baru dan lanjutkan aktivitas kalian di sana.
+        </div>
+        
+        <a href="https://apcloud.my.id" class="button" target="_blank">
+            🚀 Kunjungi Website Baru
+        </a>
+        
+        <a href="https://apcloud.my.id" class="button" target="_blank">
+            📱 Bookmark Sekarang
+        </a>
+        
+        <div class="footer">
+            <p>Terima kasih atas pengertian dan dukungan kalian! 🙏</p>
+            <p><em>Tim AI Prompt Generator</em></p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto redirect setelah 10 detik (opsional)
+        setTimeout(function() {
+            if (confirm("Ingin langsung diarahkan ke website baru sekarang?")) {
+                window.open("https://apcloud.my.id", "_blank");
+            }
+        }, 5000);
     </script>
-
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  </head>
-  <body>
-    <noscript>
-      <div
-        style="
-          text-align: center;
-          padding: 50px;
-          font-family: Arial, sans-serif;
-        "
-      >
-        <h1>JavaScript Required</h1>
-        <p>
-          This application requires JavaScript to run. Please enable JavaScript
-          in your browser.
-        </p>
-      </div>
-    </noscript>
-    <div id="root"></div>
-  </body>
+</body>
 </html>

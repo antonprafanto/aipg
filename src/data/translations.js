@@ -29,14 +29,14 @@ export const translations = {
 
     aboutApp: "About App",
     aboutContent: {
-      line1:
-        "🎯 Adobe Stock Generator: Creates prompts optimized for stock photography based on July 2025 trending categories",
-      line2:
-        "🤖 Midjourney Integration: Full V7 support with latest parameters and Discord format",
-      line3:
-        "🎲 Smart Randomization: Each generation creates unique prompts that never repeat",
-      line4:
-        "📊 Research-Based: Built on July 2025 market trends and dimensional design data",
+      line1: "🎯 Research-Based: Built on Adobe Stock market analysis showing $4.65B to $8.54B growth (2024-2033)",
+      line2: "🤖 AI-Optimized: 47.85% of Adobe Stock is now AI-generated - we're ahead of the curve", 
+      line3: "💰 ROI-Focused: 6 categories selected based on proven commercial performance data",
+      line4: "📊 Evergreen Strategy: Focus on sustainable, non-seasonal content with consistent sales",
+      line5: "🚫 Zero Living Creatures: Compliant with no-people, no-animals, no-plants policy",
+      line6: "✨ Quality Standards: Meets Adobe's technical requirements (4-100MP, sRGB, isolated)",
+      line7: "🔍 SEO Optimized: High-performing keywords and metadata structures included",
+      line8: "💼 Commercial Grade: Ready for enhanced licensing and business applications"
     },
 
     howToUse: "How to Use",
@@ -115,12 +115,13 @@ export const translations = {
 
     categories: {
       business: "Business & Technology",
-      lifestyle: "Lifestyle & Wellness",
+      transportation: "Transportation & Logistics", // NEW CATEGORY
       food: "Food & Nutrition",
       abstract: "Abstract & Patterns",
-      nature: "Nature & Landscapes",
-      architecture: "Architecture & Interiors",
+      nature: "Nature & Environmental", // Updated name
+      architecture: "Architecture & Interiors"
     },
+    
 
     category: "Category",
     contentType: "Content Type",
@@ -245,16 +246,16 @@ export const translations = {
 
     aboutApp: "Tentang Aplikasi",
     aboutContent: {
-      line1:
-        "🎯 Generator Adobe Stock: Membuat prompt yang dioptimalkan untuk fotografi stok berdasarkan kategori trending Juli 2025",
-      line2:
-        "🤖 Integrasi Midjourney: Dukungan penuh V7 dengan parameter terbaru dan format Discord",
-      line3:
-        "🎲 Randomisasi Cerdas: Setiap generasi membuat prompt unik yang tidak pernah berulang",
-      line4:
-        "📊 Berbasis Riset: Dibangun berdasarkan tren pasar Juli 2025 dan data desain dimensional",
+      line1: "🎯 Berbasis Riset: Dibangun berdasarkan analisis pasar Adobe Stock $4,65B ke $8,54B (2024-2033)",
+      line2: "🤖 Optimasi AI: 47,85% Adobe Stock kini AI-generated - kami di depan kurva",
+      line3: "💰 Fokus ROI: 6 kategori dipilih berdasarkan data performa komersial terbukti", 
+      line4: "📊 Strategi Evergreen: Fokus konten berkelanjutan non-musiman dengan penjualan konsisten",
+      line5: "🚫 Tanpa Makhluk Hidup: Patuh kebijakan no-people, no-animals, no-plants",
+      line6: "✨ Standar Kualitas: Memenuhi persyaratan teknis Adobe (4-100MP, sRGB, isolated)",
+      line7: "🔍 Optimasi SEO: Termasuk keyword berkinerja tinggi dan struktur metadata",
+      line8: "💼 Kelas Komersial: Siap enhanced licensing dan aplikasi bisnis"
     },
-
+    
     howToUse: "Cara Menggunakan",
     howToContent: {
       step1: "Pilih mode output (Standard/Midjourney)",
@@ -330,11 +331,11 @@ export const translations = {
 
     categories: {
       business: "Bisnis & Teknologi",
-      lifestyle: "Gaya Hidup & Wellness",
+      transportation: "Transportasi & Logistik", // KATEGORI BARU  
       food: "Makanan & Nutrisi",
       abstract: "Abstrak & Pola",
-      nature: "Alam & Lanskap",
-      architecture: "Arsitektur & Interior",
+      nature: "Alam & Lingkungan", // Updated name
+      architecture: "Arsitektur & Interior"
     },
 
     category: "Kategori",

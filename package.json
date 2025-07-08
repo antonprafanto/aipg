@@ -1,6 +1,6 @@
 {
   "name": "aipg",
-  "homepage": "https://micro-boy.github.io/aipg",
+  "homepage": "https://github.com/micro-boy/aipg.git",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

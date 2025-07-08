@@ -81,7 +81,7 @@ const useSettings = () => {
   // ✅ FIXED: Complete randomizeAll function - BENAR-BENAR RANDOM!
   const randomizeAll = () => {
     // 🎯 BASIC SETTINGS - Yang harus dirandom
-    const categoryKeys = ['business', 'lifestyle', 'food', 'abstract', 'nature', 'architecture'];
+    const categoryKeys = ['business', 'transportation', 'food', 'abstract', 'nature', 'architecture'];
     const newCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
     setSelectedCategory(newCategory);
     setSelectedTheme('auto'); // Always auto for random all

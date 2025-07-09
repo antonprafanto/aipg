@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/antonprafanto/aipg.git/static/css/main.834193a6.css",
-    "main.js": "/antonprafanto/aipg.git/static/js/main.2bbd534c.js",
+    "main.css": "/antonprafanto/aipg.git/static/css/main.74e6261f.css",
+    "main.js": "/antonprafanto/aipg.git/static/js/main.84f5dcb6.js",
     "static/js/453.3aa005bb.chunk.js": "/antonprafanto/aipg.git/static/js/453.3aa005bb.chunk.js",
     "index.html": "/antonprafanto/aipg.git/index.html",
-    "main.834193a6.css.map": "/antonprafanto/aipg.git/static/css/main.834193a6.css.map",
-    "main.2bbd534c.js.map": "/antonprafanto/aipg.git/static/js/main.2bbd534c.js.map",
+    "main.74e6261f.css.map": "/antonprafanto/aipg.git/static/css/main.74e6261f.css.map",
+    "main.84f5dcb6.js.map": "/antonprafanto/aipg.git/static/js/main.84f5dcb6.js.map",
     "453.3aa005bb.chunk.js.map": "/antonprafanto/aipg.git/static/js/453.3aa005bb.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.834193a6.css",
-    "static/js/main.2bbd534c.js"
+    "static/css/main.74e6261f.css",
+    "static/js/main.84f5dcb6.js"
   ]
 }

@@ -1,3 +1,5 @@
+// src/hooks/usePromptGeneration.js - UPDATED with Keyword Optimization
+
 import { useState, useCallback } from "react";
 import notificationManager from "../utils/notificationManager";
 import { categories } from "../data/categories";
@@ -13,6 +15,12 @@ import {
   qualityTerms,
   qualityEndings,
 } from "../data/styles";
+
+// ✅ NEW: Import keyword optimization system
+import { 
+  generateOptimizedKeywords, 
+  generateSEOTitle
+} from "../data/keywordOptimization";
 
 // UTILITY FUNCTIONS FOR TRUE RANDOMIZATION (Outside hook to avoid dependencies)
 const getRandomElement = (array) => {
@@ -67,13 +75,15 @@ const usePromptGeneration = (settings, t) => {
   const [prompts, setPrompts] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
+  
+  // ✅ NEW: Enhanced prompts with metadata
+  const [promptsWithMetadata, setPromptsWithMetadata] = useState([]);
 
-  // ✨ UPDATED GENERATION LOGIC WITH MANUAL KEYWORD SUPPORT + TRUE RANDOMIZATION
+  // ✅ ENHANCED GENERATION LOGIC WITH KEYWORD OPTIMIZATION
   const generatePrompts = useCallback(
     (isFullRandom = false) => {
       setIsGenerating(true);
 
-      // ✅ FIXED: Smart prompt generation with styleVariations and moodVariations
       const generateSmartPrompt = (
         category,
         isRandomMode,
@@ -84,30 +94,28 @@ const usePromptGeneration = (settings, t) => {
       ) => {
         const categoryData = categories[category];
 
-        // ✨ NEW: Use manual keyword if provided, otherwise use theme logic
+        // Theme selection logic
         let selectedThemeText;
         if (isManualMode && manualKeyword && manualKeyword.trim()) {
-          selectedThemeText = manualKeyword.trim(); // Use manual keyword
+          selectedThemeText = manualKeyword.trim();
         } else if (
           selectedTheme &&
           selectedTheme !== "auto" &&
           selectedTheme !== "manual"
         ) {
-          selectedThemeText = selectedTheme; // Use manual selection from dropdown
+          selectedThemeText = selectedTheme;
         } else if (categoryData) {
-          selectedThemeText = getRandomElement(categoryData.themes); // Random selection from category
+          selectedThemeText = getRandomElement(categoryData.themes);
         } else {
-          // Fallback if no category data available
           selectedThemeText = "professional product photography";
         }
 
-        // ✅ FIXED: Use styleVariations for randomization, fallback to styles for default
+        // Style and mood variations
         const styleOptions = styleVariations[promptSettings.selectedStyle];
         const styleDesc = styleOptions
           ? getRandomElement(styleOptions)
           : styles[promptSettings.selectedStyle];
 
-        // ✅ FIXED: Use moodVariations for randomization, fallback to moods for default
         const moodOptions = moodVariations[promptSettings.selectedMood];
         const moodDesc = moodOptions
           ? getRandomElement(moodOptions)
@@ -129,256 +137,257 @@ const usePromptGeneration = (settings, t) => {
           ? getRandomElement(cameraSettings)
           : getCameraFromSettings(promptSettings.focusStyle);
 
-        // ✅ ALWAYS random quality terms
         const quality = getRandomElement(qualityTerms);
+        const ending = getRandomElement(qualityEndings);
 
-        const basePrompt = `${selectedThemeText}, ${styleDesc}, ${lighting}, ${composition}, ${colors}, ${camera}, ${quality}, ${moodDesc}`;
+        // ✅ NEW: Generate optimized keywords
+        const keywords = generateOptimizedKeywords(
+          category,
+          promptSettings.selectedStyle,
+          promptSettings.selectedMood,
+          selectedThemeText,
+          [lighting, composition, colors] // Additional context
+        );
+
+        // ✅ NEW: Generate SEO title
+        const seoTitle = generateSEOTitle(
+          category,
+          selectedThemeText,
+          promptSettings.selectedStyle,
+          promptSettings.selectedMood
+        );
+
+        // Construct the prompt
+        const promptParts = [
+          selectedThemeText,
+          styleDesc,
+          moodDesc,
+          lighting,
+          composition,
+          colors,
+          camera,
+          quality,
+          ending,
+        ];
+
+        const fullPrompt = promptParts.join(", ");
 
         return {
-          prompt: basePrompt,
+          id: generateUniqueId(),
+          prompt: fullPrompt,
+          category: category,
+          style: promptSettings.selectedStyle,
+          mood: promptSettings.selectedMood,
+          contentType: promptSettings.contentType,
           theme: selectedThemeText,
-          uniqueId: generateUniqueId(),
-          timestamp: Date.now(),
+          // ✅ NEW: Include metadata
+          keywords: keywords,
+          title: seoTitle,
+          metadata: {
+            lighting,
+            composition,
+            colors,
+            camera,
+            quality,
+            generated: new Date().toISOString(),
+            settings: {
+              isManualMode,
+              manualKeyword,
+              isRandomMode
+            }
+          }
         };
       };
 
-      const promptSettings = {
-        selectedStyle: settings.selectedStyle,
-        selectedMood: settings.selectedMood,
-        lightingPreference: settings.lightingPreference,
-        compositionStyle: settings.compositionStyle,
-        colorEnhancement: settings.colorEnhancement,
-        focusStyle: settings.focusStyle,
-        qualityPriority: settings.qualityPriority,
-      };
+      try {
+        const newPrompts = [];
+        const newMetadata = [];
 
-      const newPrompts = [];
+        for (let i = 0; i < settings.promptCount; i++) {
+          let currentCategory, currentStyle, currentMood;
 
-      for (let i = 0; i < settings.promptCount; i++) {
-        let categoryToUse;
-
-        if (isFullRandom) {
-          // Truly random category selection for each prompt
-          const categoryKeys = Object.keys(categories);
-          categoryToUse = getRandomElement(categoryKeys);
-        } else {
-          categoryToUse = settings.selectedCategory;
-        }
-
-        // ✨ UPDATED: Pass manual keyword and mode to generation function
-        const promptData = generateSmartPrompt(
-          categoryToUse,
-          isFullRandom,
-          promptSettings,
-          settings.selectedTheme,
-          settings.manualKeyword, // ✨ NEW: Pass manual keyword
-          settings.isManualMode // ✨ NEW: Pass manual mode
-        );
-
-        if (promptData) {
-          let finalPrompt = promptData.prompt;
-
-          // Add Midjourney parameters if needed
-          if (settings.outputMode === "midjourney") {
-            const mjParams = [];
-
-            if (settings.mjAspectRatio !== "1:1") {
-              mjParams.push(`--ar ${settings.mjAspectRatio}`);
-            }
-
-            if (settings.mjVersion !== "6.1") {
-              mjParams.push(`--v ${settings.mjVersion}`);
-            }
-
-            if (settings.mjChaos > 0) {
-              mjParams.push(`--chaos ${settings.mjChaos}`);
-            }
-
-            if (settings.mjStylize !== 100) {
-              mjParams.push(`--s ${settings.mjStylize}`);
-            }
-
-            if (settings.mjQuality !== "1") {
-              mjParams.push(`--q ${settings.mjQuality}`);
-            }
-
-            if (settings.mjWeird > 0) {
-              mjParams.push(`--weird ${settings.mjWeird}`);
-            }
-
-            if (settings.mjRaw) {
-              mjParams.push("--raw");
-            }
-
-            if (settings.mjTile) {
-              mjParams.push("--tile");
-            }
-
-            if (settings.mjNiji) {
-              mjParams.push("--niji 6");
-            }
-
-            // Enhanced negative prompts for clean outputs - NO LIVING CREATURES
-            const negativeElements = [
-              "people",
-              "human",
-              "person",
-              "man",
-              "woman",
-              "child",
-              "face",
-              "hands",
-              "body",
-              "animals",
-              "pets",
-              "cats",
-              "dogs",
-              "birds",
-              "fish",
-              "wildlife",
-              "insects",
-              "plants",
-              "flowers",
-              "trees",
-              "leaves",
-              "grass",
+          if (isFullRandom) {
+            const categoryKeys = [
+              "business",
+              "transportation", 
+              "food",
+              "abstract",
               "nature",
-              "organic life",
-              "text",
-              "logo",
-              "watermark",
-              "signature",
-              "writing",
-              "letters",
-              "numbers",
+              "architecture",
             ];
+            currentCategory = getRandomElement(categoryKeys);
 
-            if (settings.mjNoElements) {
-              const customElements = settings.mjNoElements
-                .split(",")
-                .map((e) => e.trim())
-                .filter((e) => e);
-              negativeElements.push(...customElements);
-            }
+            const styleKeys = Object.keys(styles);
+            currentStyle = getRandomElement(styleKeys);
 
-            if (negativeElements.length > 0) {
-              mjParams.push(`--no ${negativeElements.join(", ")}`);
-            }
-
-            if (mjParams.length > 0) {
-              finalPrompt = `/imagine ${finalPrompt} ${mjParams.join(" ")}`;
-            } else {
-              finalPrompt = `/imagine ${finalPrompt}`;
-            }
+            const moodKeys = Object.keys(moods);
+            currentMood = getRandomElement(moodKeys);
           } else {
-            // ✅ FIXED: Random quality ending instead of hardcoded
-            const randomEnding = getRandomElement(qualityEndings);
-            finalPrompt = `${finalPrompt}. ${randomEnding}`;
+            currentCategory = settings.selectedCategory;
+            currentStyle = settings.selectedStyle;
+            currentMood = settings.selectedMood;
           }
 
-          newPrompts.push({
-            id: promptData.uniqueId,
-            prompt: finalPrompt,
-            category: categoryToUse,
-            theme: promptData.theme,
-            type: settings.contentType,
-            mode: settings.outputMode,
-            timestamp: promptData.timestamp,
-          });
-        }
-      }
+          const promptSettings = {
+            selectedStyle: currentStyle,
+            selectedMood: currentMood,
+            contentType: settings.contentType,
+            lightingPreference: settings.lightingPreference,
+            compositionStyle: settings.compositionStyle,
+            colorEnhancement: settings.colorEnhancement,
+            focusStyle: settings.focusStyle,
+          };
 
-      setTimeout(() => {
+          const promptData = generateSmartPrompt(
+            currentCategory,
+            isFullRandom,
+            promptSettings,
+            settings.selectedTheme,
+            settings.manualKeyword,
+            settings.isManualMode
+          );
+
+          newPrompts.push(promptData.prompt);
+          newMetadata.push(promptData);
+        }
+
         setPrompts(newPrompts);
+        setPromptsWithMetadata(newMetadata);
+
+        // ✅ ENHANCED: Show keyword optimization in notification
+        const avgKeywords = Math.round(
+          newMetadata.reduce((sum, p) => sum + (p.keywords?.count || 0), 0) / newMetadata.length
+        );
+
+        notificationManager.success(
+          `✨ Generated ${newPrompts.length} prompts with ${avgKeywords} avg keywords (Adobe Stock optimized)`
+        );
+      } catch (error) {
+        console.error("Error generating prompts:", error);
+        notificationManager.error(
+          t("notifications.generationError") || "Error generating prompts"
+        );
+      } finally {
         setIsGenerating(false);
-
-        // ✅ FIXED: Gunakan terjemahan yang benar
-        let themeMode = t("notifications.autoRandom");
-        if (settings.isManualMode && settings.manualKeyword) {
-          themeMode = `${t("notifications.manual")}: "${
-            settings.manualKeyword
-          }"`;
-        } else if (settings.selectedTheme !== "auto") {
-          themeMode = t("notifications.predefinedTheme");
-        }
-
-        const generationMessage = `
-      <div class="text-sm font-medium">${t(
-        "notifications.uniqueGeneration"
-      )}</div>
-      <div class="text-xs mt-1 opacity-90">🎯 ${t(
-        "notifications.themeMode"
-      )}: ${themeMode}</div>
-      <div class="text-xs mt-1 opacity-90">🚫 ${t(
-        "notifications.warningText"
-      )}</div>
-      `;
-        notificationManager.generation(generationMessage);
-      }, 800);
+      }
     },
-    [
-      settings.promptCount,
-      settings.selectedCategory,
-      settings.selectedTheme,
-      settings.manualKeyword, // ✨ NEW: Add manual keyword to dependencies
-      settings.isManualMode, // ✨ NEW: Add manual mode to dependencies
-      settings.selectedStyle,
-      settings.selectedMood,
-      settings.lightingPreference,
-      settings.compositionStyle,
-      settings.colorEnhancement,
-      settings.focusStyle,
-      settings.qualityPriority,
-      settings.outputMode,
-      settings.contentType,
-      settings.mjAspectRatio,
-      settings.mjVersion,
-      settings.mjChaos,
-      settings.mjStylize,
-      settings.mjQuality,
-      settings.mjWeird,
-      settings.mjRaw,
-      settings.mjTile,
-      settings.mjNiji,
-      settings.mjNoElements,
-      t,
-    ]
+    [settings, t]
   );
 
-  const copyPrompt = useCallback((prompt, index) => {
-    navigator.clipboard.writeText(prompt);
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  }, []);
+  // ✅ ENHANCED: Copy functionality with keyword support
+  const copyToClipboard = useCallback(async (text, index = null, type = 'prompt') => {
+    try {
+      let contentToCopy = text;
+      
+      // Enhanced copy formats
+      if (type === 'with-keywords' && index !== null && promptsWithMetadata[index]) {
+        const metadata = promptsWithMetadata[index];
+        contentToCopy = `${text}\n\nKeywords: ${metadata.keywords?.all?.join(', ') || ''}\nTitle: ${metadata.title || ''}`;
+      } else if (type === 'metadata-only' && index !== null && promptsWithMetadata[index]) {
+        const metadata = promptsWithMetadata[index];
+        contentToCopy = `Title: ${metadata.title}\nKeywords: ${metadata.keywords?.all?.join(', ') || ''}`;
+      }
 
-  const copyAllPrompts = useCallback(() => {
-    const content = prompts.map((p, i) => `${i + 1}. ${p.prompt}`).join("\n\n");
-    navigator.clipboard.writeText(content);
+      await navigator.clipboard.writeText(contentToCopy);
+      setCopiedIndex(index);
+      
+      setTimeout(() => setCopiedIndex(null), 2000);
+      
+      const successMessage = type === 'with-keywords' 
+        ? "Prompt with keywords copied!"
+        : type === 'metadata-only'
+        ? "Metadata copied!"
+        : "Prompt copied!";
+        
+      notificationManager.success(successMessage);
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+      notificationManager.error("Failed to copy to clipboard");
+    }
+  }, [promptsWithMetadata]);
 
-    notificationManager.copy(t("notifications.allCopied"));
-  }, [prompts, t]);
+  // ✅ NEW: Copy all prompts with enhanced formats
+  const copyAllPrompts = useCallback(async (format = 'prompts-only') => {
+    try {
+      let content = '';
+      
+      switch (format) {
+        case 'prompts-only':
+          content = prompts.join('\n\n');
+          break;
+        case 'with-keywords':
+          content = promptsWithMetadata.map((item, index) => 
+            `=== PROMPT ${index + 1} ===\n${item.prompt}\n\nKeywords: ${item.keywords?.all?.join(', ') || ''}\nTitle: ${item.title || ''}\n`
+          ).join('\n');
+          break;
+        case 'keywords-only':
+          content = promptsWithMetadata.map(item => item.keywords?.all?.join(', ') || '').join('\n\n');
+          break;
+        case 'titles-only':
+          content = promptsWithMetadata.map(item => item.title || '').join('\n');
+          break;
+        default:
+          content = prompts.join('\n\n');
+      }
 
-  const exportPrompts = useCallback(() => {
-    const content = prompts.map((p, i) => `${i + 1}. ${p.prompt}`).join("\n\n");
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `ai-prompts-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [prompts]);
+      await navigator.clipboard.writeText(content);
+      notificationManager.success(`All ${format.replace('-', ' ')} copied to clipboard!`);
+    } catch (err) {
+      console.error("Failed to copy all prompts:", err);
+      notificationManager.error("Failed to copy all prompts");
+    }
+  }, [prompts, promptsWithMetadata]);
+
+  // ✅ NEW: Export functionality
+  const exportPrompts = useCallback((format = 'txt') => {
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    switch (format) {
+      case 'csv':
+        // Will be handled by enhanced export component
+        return promptsWithMetadata;
+      case 'json':
+        const jsonData = {
+          metadata: {
+            generated: new Date().toISOString(),
+            count: promptsWithMetadata.length,
+            settings: settings
+          },
+          prompts: promptsWithMetadata
+        };
+        const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+        const jsonUrl = URL.createObjectURL(jsonBlob);
+        const jsonLink = document.createElement('a');
+        jsonLink.href = jsonUrl;
+        jsonLink.download = `adobe-stock-prompts-${timestamp}.json`;
+        jsonLink.click();
+        break;
+      case 'txt':
+      default:
+        const txtContent = promptsWithMetadata.map((item, index) => 
+          `=== PROMPT ${index + 1} ===\nTitle: ${item.title}\nPrompt: ${item.prompt}\nKeywords: ${item.keywords?.all?.join(', ') || ''}\n`
+        ).join('\n');
+        const txtBlob = new Blob([txtContent], { type: 'text/plain' });
+        const txtUrl = URL.createObjectURL(txtBlob);
+        const txtLink = document.createElement('a');
+        txtLink.href = txtUrl;
+        txtLink.download = `adobe-stock-prompts-${timestamp}.txt`;
+        txtLink.click();
+        break;
+    }
+    
+    notificationManager.success(`Prompts exported as ${format.toUpperCase()}`);
+  }, [promptsWithMetadata, settings]);
 
   return {
     prompts,
+    promptsWithMetadata, // ✅ NEW: Include metadata
     isGenerating,
     copiedIndex,
     generatePrompts,
-    copyPrompt,
-    copyAllPrompts,
-    exportPrompts,
+    copyToClipboard,
+    copyAllPrompts,    // ✅ ENHANCED
+    exportPrompts,     // ✅ NEW
   };
 };
 

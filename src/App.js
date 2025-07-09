@@ -1,4 +1,5 @@
-// src/App.js
+// src/App.js - COMPLETE FILE with Phase 2B Keyword Optimization Integration
+
 import React, { useEffect, useCallback } from "react";
 import { ThemeProvider } from "./contexts/ThemeContext";
 //import AdSense from "./components/UI/AdSense";
@@ -25,12 +26,15 @@ import { translations } from "./data/translations";
 const AdobeStockPromptGeneratorContent = () => {
   // Custom Hooks
   const settings = useSettings();
+
+  // ✅ ENHANCED: Destructure promptsWithMetadata for keyword optimization
   const {
     prompts,
+    promptsWithMetadata, // ✅ NEW: Metadata for keyword optimization
     isGenerating,
     copiedIndex,
     generatePrompts,
-    copyPrompt,
+    copyToClipboard: copyPrompt,
     copyAllPrompts,
     exportPrompts,
   } = usePromptGeneration(
@@ -61,71 +65,85 @@ const AdobeStockPromptGeneratorContent = () => {
     [settings.language]
   );
 
-  // Enhanced randomizeAll that auto-generates prompts
-  const handleRandomizeAll = () => {
+  // Handle randomize all with proper notification
+  const handleRandomizeAll = useCallback(() => {
     settings.randomizeAll();
+    generatePrompts(true); // true indicates full randomization
+  }, [settings, generatePrompts]);
 
-    // Show success message
-    notificationManager.random(t("notifications.randomized"));
-
-    // Auto-generate prompts after randomization with TRUE RANDOM mode (mixed categories)
-    setTimeout(() => {
-      generatePrompts(true); // Pass true to indicate full random mode
-    }, 100);
-  };
-
-  // Generate initial prompts using user's default settings (not random)
+  // Keyboard shortcuts
   useEffect(() => {
-    generatePrompts(false); // false = use user settings, not random
-  }, [generatePrompts]);
+    const handleKeyPress = (event) => {
+      // Ctrl/Cmd + Enter to generate prompts
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        if (!isGenerating) {
+          generatePrompts();
+        }
+      }
 
-  // Notification cleanup
-  useEffect(() => {
-    return () => {
-      notificationManager.clearAll();
+      // Ctrl/Cmd + R to randomize all
+      if ((event.ctrlKey || event.metaKey) && event.key === "r") {
+        event.preventDefault();
+        if (!isGenerating) {
+          handleRandomizeAll();
+        }
+      }
+
+      // Escape to close settings
+      if (event.key === "Escape") {
+        settings.setShowSettings(false);
+      }
     };
-  }, []);
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isGenerating, generatePrompts, handleRandomizeAll, settings]);
+
+  // Error boundary effect
+  useEffect(() => {
+    const handleError = (error) => {
+      console.error("Application error:", error);
+      notificationManager.error(
+        t("notifications.applicationError") || "An unexpected error occurred"
+      );
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleError);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleError);
+    };
+  }, [t]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 p-4">
-      <div className="container mx-auto max-w-7xl">
-        {/* Header Section */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
         <Header
           language={settings.language}
           setLanguage={settings.setLanguage}
           t={t}
         />
 
-        {/* Info Sections - FIXED: Pastikan props diteruskan dengan benar */}
+        {/* Info Sections */}
         <InfoSections
           expandedSections={settings.expandedSections}
           toggleSection={settings.toggleSection}
           t={t}
         />
 
-        {/* Iklan Banner Top - Setelah Info */}
-        {/*<div className="my-8">
-          <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-4">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              🧪 <strong>Testing AdSense:</strong> Pastikan ganti dengan ad slot
-              yang valid dari dashboard Google AdSense
-            </p>
-          </div>
-          <AdSense
-            adSlot="8757390485"
-            adFormat="auto"
-            className="mx-auto"
-          />
-        </div>*/}
-
-        {/* Output Mode Selection */}
+        {/* Output Mode Selector */}
         <OutputModeSelector
           outputMode={settings.outputMode}
           setOutputMode={settings.setOutputMode}
+          language={settings.language}
           t={t}
         />
 
-        {/* Midjourney Settings Panel */}
+        {/* Midjourney Settings */}
         {settings.outputMode === "midjourney" && (
           <MidjourneySettings
             mjVersion={settings.mjVersion}
@@ -153,23 +171,27 @@ const AdobeStockPromptGeneratorContent = () => {
           />
         )}
 
-        {/* Advanced Settings Panel */}
-        <AdvancedSettings
-          showSettings={settings.showSettings}
-          setShowSettings={settings.setShowSettings}
-          colorEnhancement={settings.colorEnhancement}
-          setColorEnhancement={settings.setColorEnhancement}
-          lightingStyle={settings.lightingStyle}
-          setLightingStyle={settings.setLightingStyle}
-          artStyle={settings.artStyle}
-          setArtStyle={settings.setArtStyle}
-          cameraAngle={settings.cameraAngle}
-          setCameraAngle={settings.setCameraAngle}
-          numberOfPrompts={settings.numberOfPrompts}
-          setNumberOfPrompts={settings.setNumberOfPrompts}
-          language={settings.language}
-          t={t}
-        />
+        {/* Advanced Settings Modal */}
+        {settings.showSettings && (
+          <AdvancedSettings
+            setShowSettings={settings.setShowSettings}
+            qualityPriority={settings.qualityPriority}
+            setQualityPriority={settings.setQualityPriority}
+            focusStyle={settings.focusStyle}
+            setFocusStyle={settings.setFocusStyle}
+            colorEnhancement={settings.colorEnhancement}
+            setColorEnhancement={settings.setColorEnhancement}
+            lightingPreference={settings.lightingPreference}
+            setLightingPreference={settings.setLightingPreference}
+            compositionStyle={settings.compositionStyle}
+            setCompositionStyle={settings.setCompositionStyle}
+            marketFocus={settings.marketFocus}
+            setMarketFocus={settings.setMarketFocus}
+            generatePrompts={generatePrompts}
+            language={settings.language}
+            t={t}
+          />
+        )}
 
         {/* Control Panel */}
         <ControlPanel
@@ -199,9 +221,10 @@ const AdobeStockPromptGeneratorContent = () => {
           t={t}
         />
 
-        {/* Results Display */}
+        {/* ✅ ENHANCED: Results Display with Keyword Optimization */}
         <PromptsDisplay
           prompts={prompts}
+          promptsWithMetadata={promptsWithMetadata} // ✅ NEW: Pass metadata for keywords
           outputMode={settings.outputMode}
           copiedIndex={copiedIndex}
           onCopyPrompt={copyPrompt}
@@ -212,63 +235,26 @@ const AdobeStockPromptGeneratorContent = () => {
         />
 
         {/* Footer */}
-        <Footer t={t} />
+        <Footer language={settings.language} t={t} />
+
+        {/* Floating Support Button */}
+        <FloatingButton language={settings.language} t={t} />
+
+        {/* AdSense - Commented out but ready for use */}
+        {/* <AdSense /> */}
       </div>
-
-      {/* Floating Donation Button */}
-      <FloatingButton t={t} />
-
-      {/* Global Styles */}
-      <style>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 20px;
-          width: 20px;
-          border-radius: 50%;
-          background: #3b82f6;
-          cursor: pointer;
-          box-shadow: 0 0 2px 0 rgba(0,0,0,0.2);
-        }
-        .dark .slider::-webkit-slider-thumb {
-          background: #60a5fa;
-          box-shadow: 0 0 2px 0 rgba(255,255,255,0.1);
-        }
-        .slider::-webkit-slider-track {
-          height: 8px;
-          cursor: pointer;
-          background: #e5e7eb;
-          border-radius: 4px;
-        }
-        .dark .slider::-webkit-slider-track {
-          background: #374151;
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-          }
-          50% {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-          }
-        }
-        
-        .animate-pulse {
-          animation: pulse 2s infinite;
-        }
-      `}</style>
     </div>
   );
 };
 
-// Main App component with ThemeProvider wrapper
-const AdobeStockPromptGenerator = () => {
+const App = () => {
   return (
     <ThemeProvider>
-      <AdobeStockPromptGeneratorContent />
+      <div className="App">
+        <AdobeStockPromptGeneratorContent />
+      </div>
     </ThemeProvider>
   );
 };
 
-export default AdobeStockPromptGenerator;
+export default App;

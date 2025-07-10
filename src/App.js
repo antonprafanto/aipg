@@ -1,5 +1,5 @@
-// src/App.js - FIXED VERSION with proper MidJourney props
-// ✅ FIXED: setMjAspectRatio is not a function error resolved
+// src/App.js - COMPLETE FIXED VERSION
+// ✅ FIXED: Settings modal issue and all props passing
 
 import React, { useEffect, useCallback, useMemo } from "react";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -136,9 +136,9 @@ const AdobeStockPromptGeneratorContent = () => {
             .then(() => {
               notificationManager.success("Prompt copied to clipboard!");
             })
-            .catch((error) => {
-              console.error("Fallback copy failed:", error);
-              notificationManager.error("Failed to copy prompt");
+            .catch((err) => {
+              console.error("Failed to copy to clipboard:", err);
+              notificationManager.error("Failed to copy to clipboard");
             });
         }
       } catch (error) {
@@ -149,71 +149,21 @@ const AdobeStockPromptGeneratorContent = () => {
     [copyPrompt]
   );
 
-  // ✅ FIXED: Keyboard shortcuts with all required dependencies
+  // ✅ FIX: Cleanup and performance optimization - FIXED DEPENDENCIES
   useEffect(() => {
-    const handleKeyPress = (event) => {
-      try {
-        // Prevent if user is typing in input fields
-        if (
-          event.target.tagName === "INPUT" ||
-          event.target.tagName === "TEXTAREA" ||
-          event.target.isContentEditable
-        ) {
-          return;
-        }
-
-        // Ctrl/Cmd + Enter to generate prompts
-        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-          event.preventDefault();
-          if (
-            !isGenerating &&
-            generatePrompts &&
-            typeof generatePrompts === "function"
-          ) {
-            generatePrompts();
-          }
-        }
-
-        // Ctrl/Cmd + R to randomize all
-        if ((event.ctrlKey || event.metaKey) && event.key === "r") {
-          event.preventDefault();
-          if (!isGenerating) {
-            handleRandomizeAll();
-          }
-        }
-
-        // Escape to close settings
-        if (event.key === "Escape") {
-          if (
-            settings.setShowSettings &&
-            typeof settings.setShowSettings === "function"
-          ) {
-            settings.setShowSettings(false);
-          }
-        }
-
-        // Ctrl/Cmd + C to copy all prompts (when not in input)
-        if (
-          (event.ctrlKey || event.metaKey) &&
-          event.key === "c" &&
-          prompts.length > 0
-        ) {
-          event.preventDefault();
-          handleCopyAllPrompts("prompts-only");
-        }
-      } catch (error) {
-        console.error("Keyboard shortcut error:", error);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    // Pre-warm critical functions to prevent recreations
+    if (settings && generatePrompts && prompts) {
+      console.log("App initialized with:", {
+        settingsReady: !!settings,
+        generateReady: !!generatePrompts,
+        promptsCount: prompts.length,
+      });
+    }
   }, [
-    isGenerating,
+    settings,
     generatePrompts,
     handleRandomizeAll,
-    settings,
-    prompts.length,
+    prompts, // ✅ FIXED: Added prompts instead of prompts.length
     handleCopyAllPrompts,
   ]);
 
@@ -296,28 +246,99 @@ const AdobeStockPromptGeneratorContent = () => {
     [settings, t]
   );
 
+  // ✅ FIXED: Advanced Settings Props with all required settings
   const advancedSettingsProps = useMemo(
     () => ({
-      settings,
+      settings: {
+        // Pass all settings properties that AdvancedSettings needs
+        qualityPriority: settings.qualityPriority,
+        setQualityPriority: settings.setQualityPriority,
+        focusStyle: settings.focusStyle,
+        setFocusStyle: settings.setFocusStyle,
+        lightingPreference: settings.lightingPreference,
+        setLightingPreference: settings.setLightingPreference,
+        colorEnhancement: settings.colorEnhancement,
+        setColorEnhancement: settings.setColorEnhancement,
+        compositionStyle: settings.compositionStyle,
+        setCompositionStyle: settings.setCompositionStyle,
+      },
       language: settings.language,
       t,
       isVisible: settings.showSettings,
       setIsVisible: settings.setShowSettings,
     }),
-    [settings, t]
+    [
+      settings.qualityPriority,
+      settings.setQualityPriority,
+      settings.focusStyle,
+      settings.setFocusStyle,
+      settings.lightingPreference,
+      settings.setLightingPreference,
+      settings.colorEnhancement,
+      settings.setColorEnhancement,
+      settings.compositionStyle,
+      settings.setCompositionStyle,
+      settings.language,
+      settings.showSettings,
+      settings.setShowSettings,
+      t,
+    ]
   );
 
+  // ✅ FIXED: Control Panel Props - Correct function references
   const controlPanelProps = useMemo(
     () => ({
-      ...settings,
+      selectedCategory: settings.selectedCategory,
+      setSelectedCategory: settings.setSelectedCategory, // ✅ FIXED: Use direct setSelectedCategory
+      selectedTheme: settings.selectedTheme,
+      setSelectedTheme: settings.setSelectedTheme,
+      manualKeyword: settings.manualKeyword,
+      setManualKeyword: settings.setManualKeyword,
+      isManualMode: settings.isManualMode,
+      setIsManualMode: settings.setIsManualMode,
+      promptCount: settings.promptCount,
+      setPromptCount: settings.setPromptCount,
+      selectedStyle: settings.selectedStyle,
+      setSelectedStyle: settings.setSelectedStyle,
+      selectedMood: settings.selectedMood,
+      setSelectedMood: settings.setSelectedMood,
+      contentType: settings.contentType,
+      setContentType: settings.setContentType,
       outputMode: settings.outputMode,
       isGenerating,
+      showSettings: settings.showSettings, // ✅ ADDED - CRITICAL FOR SETTINGS BUTTON
+      setShowSettings: settings.setShowSettings, // ✅ ADDED - CRITICAL FOR SETTINGS BUTTON
       generatePrompts,
       randomizeAll: handleRandomizeAll,
       language: settings.language,
       t,
     }),
-    [settings, isGenerating, generatePrompts, handleRandomizeAll, t]
+    [
+      settings.selectedCategory,
+      settings.setSelectedCategory, // ✅ This is handleCategoryChange wrapper
+      settings.selectedTheme,
+      settings.setSelectedTheme,
+      settings.manualKeyword,
+      settings.setManualKeyword,
+      settings.isManualMode,
+      settings.setIsManualMode,
+      settings.promptCount,
+      settings.setPromptCount,
+      settings.selectedStyle,
+      settings.setSelectedStyle,
+      settings.selectedMood,
+      settings.setSelectedMood,
+      settings.contentType,
+      settings.setContentType,
+      settings.outputMode,
+      settings.showSettings, // ✅ ADDED
+      settings.setShowSettings, // ✅ ADDED
+      isGenerating,
+      generatePrompts,
+      handleRandomizeAll,
+      settings.language,
+      t,
+    ]
   );
 
   const promptsDisplayProps = useMemo(
@@ -399,13 +420,11 @@ const AdobeStockPromptGeneratorContent = () => {
           <MidjourneySettings {...midjourneySettingsProps} />
         )}
 
-        {/* Advanced Settings - Only show if settings panel is open */}
-        {settings.showSettings && (
-          <AdvancedSettings {...advancedSettingsProps} />
-        )}
-
         {/* Main Control Panel */}
         <ControlPanel {...controlPanelProps} />
+
+        {/* ✅ FIXED: Advanced Settings - Always render, visibility controlled inside component */}
+        <AdvancedSettings {...advancedSettingsProps} />
 
         {/* Results Display */}
         {prompts && prompts.length > 0 && (

@@ -1,4 +1,4 @@
-// src/components/Controls/ControlPanel.js - FIXED VERSION
+// src/components/Controls/ControlPanel.js - CLEAN FIXED VERSION
 
 import React, { useState } from "react";
 import {
@@ -89,177 +89,93 @@ const ControlPanel = ({
     return options;
   };
 
-  // ✅ FIX: Style display name helper
+  // ✅ FIX: Style display name helper - Use translations
   const getStyleDisplayName = (styleKey) => {
-    const styleLabels = {
-      photorealistic: { en: "Photorealistic", id: "Fotorealistik" },
-      cinematic: { en: "Cinematic", id: "Sinematik" },
-      minimalist: { en: "Minimalist", id: "Minimalis" },
-      vintage: { en: "Vintage", id: "Vintage" },
-      artistic: { en: "Artistic", id: "Artistik" },
-      documentary: { en: "Documentary", id: "Dokumenter" },
-      editorial: { en: "Editorial", id: "Editorial" },
-    };
-
-    return styleLabels[styleKey]
-      ? styleLabels[styleKey][language]
-      : styleKey.charAt(0).toUpperCase() + styleKey.slice(1);
+    // Use translation system
+    return (
+      t(`styles.${styleKey}`) ||
+      styleKey.charAt(0).toUpperCase() + styleKey.slice(1)
+    );
   };
 
-  // ✅ FIX: Mood display name helper
+  // ✅ FIX: Mood display name helper - Use translations
   const getMoodDisplayName = (moodKey) => {
-    const moodLabels = {
-      professional: { en: "Professional", id: "Profesional" },
-      calm: { en: "Calm", id: "Tenang" },
-      energetic: { en: "Energetic", id: "Energik" },
-      luxurious: { en: "Luxurious", id: "Mewah" },
-      natural: { en: "Natural", id: "Alami" },
-      modern: { en: "Modern", id: "Modern" },
-      warm: { en: "Warm", id: "Hangat" },
-    };
+    // Use translation system
+    return (
+      t(`moods.${moodKey}`) ||
+      moodKey.charAt(0).toUpperCase() + moodKey.slice(1)
+    );
+  };
 
-    return moodLabels[moodKey]
-      ? moodLabels[moodKey][language]
-      : moodKey.charAt(0).toUpperCase() + moodKey.slice(1);
+  // ✅ FIX: Handle Settings button click - SINGLE DECLARATION
+  const handleSettingsClick = () => {
+    console.log("Settings clicked - current state:", showSettings);
+    setShowSettings(!showSettings);
   };
 
   return (
-    <div className="bg-white backdrop-blur-md rounded-3xl p-6 mb-8 border border-gray-200 shadow-sm">
+    <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 mb-8 border border-gray-200 shadow-sm">
       {/* Market Performance Indicators */}
-      <MarketIndicators
-        selectedCategory={selectedCategory}
-        language={language}
-        t={t}
-      />
+      <MarketIndicators category={selectedCategory} language={language} t={t} />
 
-      {/* Advanced Filters */}
-      <AdvancedFilters
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        language={language}
-        t={t}
-        isVisible={showAdvancedFilters}
-        setIsVisible={setShowAdvancedFilters}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* Main Controls Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {/* Category Selection */}
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-gray-700 font-medium">{t("category")}</label>
-            <button
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`text-xs px-2 py-1 rounded-lg transition-colors flex items-center gap-1 ${
-                showAdvancedFilters
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              <Filter size={12} />
-              {language === "en" ? "Filters" : "Filter"}
-            </button>
-          </div>
+          <label className="flex items-center gap-2 text-gray-700 font-medium mb-3">
+            <Filter size={16} />
+            {t("category")}
+          </label>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           >
-            {Object.entries(categories).map(([key, cat]) => (
-              <option key={key} value={key} className="bg-white text-gray-800">
-                {cat.icon} {getCategoryName(key)}
+            {Object.entries(categories).map(([key, category]) => (
+              <option key={key} value={key} className="bg-white">
+                {getCategoryName(key)}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Theme Selection Dropdown */}
+        {/* Theme Selection */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2 flex items-center gap-2">
-            <Target size={16} className="text-blue-500" />
+          <label className="flex items-center gap-2 text-gray-700 font-medium mb-3">
+            <Target size={16} />
             {t("themeSelection")}
           </label>
           <select
-            value={isManualMode ? "manual" : selectedTheme}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value === "manual") {
-                setIsManualMode(true);
-                setSelectedTheme("auto");
-              } else {
-                setIsManualMode(false);
-                setSelectedTheme(value);
-              }
-            }}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-            title={t("themeTooltip")}
+            value={selectedTheme}
+            onChange={(e) => setSelectedTheme(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           >
-            <option value="auto" className="bg-white text-gray-800">
+            <option value="auto" className="bg-white">
               🎲 {t("autoRandom")}
             </option>
-            <option value="manual" className="bg-white text-blue-600">
+            <option value="manual" className="bg-white">
               ✏️ {t("manualKeyword")}
             </option>
-            <optgroup label={`📋 ${t("selectedTheme")}`} className="bg-gray-50">
-              {getCurrentThemes().map((theme, index) => (
-                <option
-                  key={index}
-                  value={theme}
-                  className="bg-white text-gray-800"
-                >
-                  {getThemeDisplayName(theme)}
-                </option>
-              ))}
-            </optgroup>
+            {getCurrentThemes().map((theme, index) => (
+              <option key={index} value={theme} className="bg-white">
+                {getThemeDisplayName(theme)}
+              </option>
+            ))}
           </select>
-
-          {/* Manual Keyword Input */}
-          {isManualMode && (
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <Edit3 size={14} className="text-blue-600" />
-                <span className="text-sm font-medium text-blue-800">
-                  {t("manualKeywordInput")}
-                </span>
-              </div>
-              <input
-                type="text"
-                value={manualKeyword}
-                onChange={(e) => setManualKeyword(e.target.value)}
-                placeholder={t("manualKeywordPlaceholder")}
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-              />
-              <p className="text-xs text-blue-600 mt-1">
-                {t("manualKeywordHint")}
-              </p>
-
-              {/* Status indicator */}
-              <div className="mt-2 flex items-center gap-2">
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    manualKeyword.trim() ? "bg-green-500" : "bg-gray-300"
-                  }`}
-                ></div>
-                <span className="text-xs text-gray-600">
-                  {manualKeyword.trim()
-                    ? t("manualKeywordActive")
-                    : t("manualKeywordEmpty")}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Content Type */}
+        {/* Content Type Toggle */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="flex items-center gap-2 text-gray-700 font-medium mb-3">
+            <Camera size={16} />
             {t("contentType")}
           </label>
           <div className="flex bg-gray-100 rounded-xl p-1">
             <button
               onClick={() => setContentType("photo")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all ${
                 contentType === "photo"
-                  ? "bg-white text-gray-800 shadow-sm"
+                  ? "bg-white text-blue-600 shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
@@ -268,9 +184,9 @@ const ControlPanel = ({
             </button>
             <button
               onClick={() => setContentType("video")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all ${
                 contentType === "video"
-                  ? "bg-white text-gray-800 shadow-sm"
+                  ? "bg-white text-blue-600 shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
@@ -279,46 +195,61 @@ const ControlPanel = ({
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Style - FIXED */}
+      {/* Manual Keyword Input */}
+      {(selectedTheme === "manual" || isManualMode) && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+          <label className="flex items-center gap-2 text-amber-800 font-medium mb-3">
+            <Edit3 size={16} />
+            {t("manualKeywordInput")}
+          </label>
+          <input
+            type="text"
+            value={manualKeyword}
+            onChange={(e) => setManualKeyword(e.target.value)}
+            placeholder={t("manualKeywordPlaceholder")}
+            className="w-full bg-white border border-amber-300 rounded-xl px-4 py-3 text-gray-800 placeholder-amber-400 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
+          />
+          <p className="text-amber-700 text-sm mt-2">
+            {t("manualKeywordHint")}
+          </p>
+        </div>
+      )}
+
+      {/* Style, Mood, Count Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        {/* Style Selection */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-700 font-medium mb-3">
             {t("style")}
           </label>
           <select
             value={selectedStyle}
             onChange={(e) => setSelectedStyle(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           >
-            {Object.keys(styles).map((styleKey) => (
-              <option
-                key={styleKey}
-                value={styleKey}
-                className="bg-white text-gray-800"
-              >
-                {getStyleDisplayName(styleKey)}
+            {Object.keys(styles).map((style) => (
+              <option key={style} value={style} className="bg-white">
+                {getStyleDisplayName(style)}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Mood - FIXED */}
+        {/* Mood Selection */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-700 font-medium mb-3">
             {t("mood")}
           </label>
           <select
             value={selectedMood}
             onChange={(e) => setSelectedMood(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           >
-            {Object.keys(moods).map((moodKey) => (
-              <option
-                key={moodKey}
-                value={moodKey}
-                className="bg-white text-gray-800"
-              >
-                {getMoodDisplayName(moodKey)}
+            {Object.keys(moods).map((mood) => (
+              <option key={mood} value={mood} className="bg-white">
+                {getMoodDisplayName(mood)}
               </option>
             ))}
           </select>
@@ -326,20 +257,16 @@ const ControlPanel = ({
 
         {/* Prompt Count */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-700 font-medium mb-3">
             {t("promptCount")}
           </label>
           <select
             value={promptCount}
             onChange={(e) => setPromptCount(Number(e.target.value))}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           >
             {getPromptCountOptions().map((count) => (
-              <option
-                key={count}
-                value={count}
-                className="bg-white text-gray-800"
-              >
+              <option key={count} value={count} className="bg-white">
                 {count} {t("prompts")}
               </option>
             ))}
@@ -348,45 +275,65 @@ const ControlPanel = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Generate Prompts */}
         <button
           onClick={generatePrompts}
           disabled={isGenerating}
-          className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:cursor-not-allowed group"
           title={t("generateTooltip")}
         >
           {isGenerating ? (
             <>
-              <RefreshCw size={20} className="animate-spin" />
+              <RefreshCw className="animate-spin" size={20} />
               {t("generating")}
             </>
           ) : (
             <>
-              <Zap size={20} />
+              <Zap
+                size={20}
+                className="group-hover:scale-110 transition-transform"
+              />
               {t("generatePrompts")}
             </>
           )}
         </button>
 
+        {/* Random All Categories */}
         <button
           onClick={randomizeAll}
           disabled={isGenerating}
-          className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-medium py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+          className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:cursor-not-allowed group"
           title={t("randomAllTooltip")}
         >
-          <Shuffle size={20} />
+          <Shuffle
+            size={20}
+            className="group-hover:rotate-180 transition-transform duration-500"
+          />
           {t("randomAll")}
         </button>
 
+        {/* Settings Button */}
         <button
-          onClick={() => setShowSettings(true)}
-          disabled={isGenerating}
-          className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white font-medium py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+          onClick={handleSettingsClick}
+          className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl group"
         >
-          <Settings size={20} />
+          <Settings
+            size={20}
+            className="group-hover:rotate-90 transition-transform duration-300"
+          />
           {t("settings")}
         </button>
       </div>
+
+      {/* Advanced Filters (Optional) */}
+      {showAdvancedFilters && (
+        <AdvancedFilters
+          language={language}
+          t={t}
+          onClose={() => setShowAdvancedFilters(false)}
+        />
+      )}
     </div>
   );
 };

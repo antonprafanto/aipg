@@ -1,168 +1,344 @@
-// src/components/InfoSections/InfoSections.js - FIXED VERSION
-import React from 'react';
-import { Info, HelpCircle, Bot, Star, ChevronDown, ChevronUp } from 'lucide-react';
+// src/components/InfoSections/InfoSections.js - COMPLETE FIXED VERSION
+// ✅ PRIORITY 2: HIGH FIX - Performance issues and re-render loops resolved
 
-const InfoSections = ({ expandedSections, toggleSection, t }) => {
-  // Debug log - remove this after fixing
-  console.log('InfoSections rendered with:', { expandedSections, toggleSection });
+import React, { memo, useMemo } from "react";
+import {
+  Info,
+  HelpCircle,
+  Bot,
+  Star,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
-  // Fallback for missing props
-  const safeExpandedSections = expandedSections || {
-    about: false,
-    howToUse: false, 
-    mjParams: false,
-    tips: false
-  };
+const InfoSections = memo(
+  ({ expandedSections, toggleSection, t, language }) => {
+    // ✅ REMOVED: Debug console.log that caused spam
+    // console.log('InfoSections rendered with:', { expandedSections, toggleSection });
 
-  const safeToggleSection = toggleSection || (() => {});
-  const safeT = t || ((key) => key);
+    // ✅ FIX: Memoize fallback values to prevent recreating objects
+    const safeExpandedSections = useMemo(
+      () =>
+        expandedSections || {
+          about: false,
+          howToUse: false,
+          mjParams: false,
+          tips: false,
+        },
+      [expandedSections]
+    );
 
-  // Internal CollapsibleSection component to avoid import issues
-  const CollapsibleSection = ({ icon: Icon, title, children, isExpanded, onToggle }) => {
+    const safeToggleSection = useMemo(
+      () => toggleSection || (() => {}),
+      [toggleSection]
+    );
+    const safeT = useMemo(() => t || ((key) => key), [t]);
+
+    // ✅ FIX: Memoize CollapsibleSection to prevent recreating component
+    const CollapsibleSection = useMemo(
+      () =>
+        ({ icon: Icon, title, children, isExpanded, onToggle }) =>
+          (
+            <div className="bg-white dark:bg-gray-800 backdrop-blur-md rounded-2xl p-4 border border-gray-200 dark:border-gray-600 shadow-sm transition-colors duration-300">
+              <button
+                onClick={onToggle}
+                className="w-full flex items-center justify-between text-gray-800 dark:text-gray-200 font-medium transition-colors duration-300 hover:text-gray-900 dark:hover:text-white"
+              >
+                <div className="flex items-center gap-2">
+                  <Icon
+                    size={16}
+                    className="text-gray-600 dark:text-gray-400"
+                  />
+                  {title}
+                </div>
+                {isExpanded ? (
+                  <ChevronUp
+                    size={16}
+                    className="text-gray-500 dark:text-gray-400"
+                  />
+                ) : (
+                  <ChevronDown
+                    size={16}
+                    className="text-gray-500 dark:text-gray-400"
+                  />
+                )}
+              </button>
+              {isExpanded && (
+                <div className="mt-3 text-gray-600 dark:text-gray-300 text-sm space-y-2 transition-colors duration-300">
+                  {children}
+                </div>
+              )}
+            </div>
+          ),
+      []
+    );
+
+    // ✅ FIX: Memoize translation texts to prevent recalculation
+    const translations = useMemo(
+      () => ({
+        aboutApp: safeT("aboutApp") || "About App",
+        howToUse: safeT("howToUse") || "How to Use",
+        mjParams: safeT("mjParams") || "MJ Parameters",
+        proTips: safeT("proTips") || "Pro Tips",
+
+        // About content with research-based information
+        aboutContent: {
+          line1:
+            safeT("aboutContent.line1") ||
+            "🎯 Research-Based: Built on Adobe Stock market analysis showing $4.65B to $8.54B growth (2024-2033)",
+          line2:
+            safeT("aboutContent.line2") ||
+            "🤖 AI-Optimized: 47.85% of Adobe Stock is now AI-generated - we're ahead of the curve",
+          line3:
+            safeT("aboutContent.line3") ||
+            "💰 ROI-Focused: 6 categories selected based on proven commercial performance data",
+          line4:
+            safeT("aboutContent.line4") ||
+            "📊 Evergreen Strategy: Focus on sustainable, non-seasonal content with consistent sales",
+          line5:
+            safeT("aboutContent.line5") ||
+            "🚫 Zero Living Creatures: Compliant with no-people, no-animals, no-plants policy",
+          line6:
+            safeT("aboutContent.line6") ||
+            "✨ Quality Standards: Meets Adobe's technical requirements (4-100MP, sRGB, isolated)",
+          line7:
+            safeT("aboutContent.line7") ||
+            "🔍 SEO Optimized: High-performing keywords and metadata structures included",
+          line8:
+            safeT("aboutContent.line8") ||
+            "💼 Commercial Grade: Ready for enhanced licensing and business applications",
+        },
+
+        // How to use content
+        howToContent: {
+          step1:
+            safeT("howToContent.step1") ||
+            "Choose output mode (Standard/Midjourney)",
+          step2:
+            safeT("howToContent.step2") || "Select category, style, and mood",
+          step3:
+            safeT("howToContent.step3") || "Adjust advanced settings if needed",
+          step4a:
+            safeT("howToContent.step4a") ||
+            "Generate Prompts - Uses YOUR selected settings with unique variations",
+          step4b:
+            safeT("howToContent.step4b") ||
+            "Random All Categories - Completely randomizes everything for maximum variety",
+          step5: safeT("howToContent.step5") || "Copy individual or export all",
+          step6: safeT("howToContent.step6") || "Use in your AI tools!",
+        },
+
+        // MJ Params content
+        mjParamsContent: {
+          ar: safeT("mjParamsContent.ar") || "Aspect ratio (16:9, 1:1, etc.)",
+          quality:
+            safeT("mjParamsContent.quality") ||
+            "Render quality (.25, .5, 1, 2)",
+          chaos: safeT("mjParamsContent.chaos") || "Variation level (0-100)",
+          stylize:
+            safeT("mjParamsContent.stylize") ||
+            "Artistic style intensity (0-1000)",
+          weird:
+            safeT("mjParamsContent.weird") || "Creative exploration (0-3000)",
+          no: safeT("mjParamsContent.no") || "Elements to exclude",
+        },
+
+        // Tips content with 2025 updates
+        tipsContent: {
+          line1:
+            safeT("tipsContent.line1") ||
+            "💡 Update: Enhanced with July 2025 trending business objects & isolated backgrounds",
+          line2:
+            safeT("tipsContent.line2") ||
+            "🎨 Midjourney: V7 requires unlock for personalization, V6.1 is default",
+          line3:
+            safeT("tipsContent.line3") ||
+            "📐 Aspect Ratios: 16:9 for landscape, 9:16 for mobile, 1:1 for social",
+          line4:
+            safeT("tipsContent.line4") ||
+            "🎲 Every generation is unique - no more repeated prompts!",
+          line5:
+            safeT("tipsContent.line5") ||
+            "🎯 Tip: Combine multiple styles for more creative results",
+          line6:
+            safeT("tipsContent.line6") ||
+            "💡 Use Manual Keywords for full control over desired content",
+          line7:
+            safeT("tipsContent.line7") ||
+            "🚀 Export all prompts for batch processing in your favorite AI tools",
+          line8:
+            safeT("tipsContent.line8") ||
+            "⚠️ Important: If any living creatures appear in generated images, please remove manually",
+        },
+      }),
+      [safeT]
+    );
+
+    // ✅ FIX: Memoize section handlers to prevent recreation
+    const sectionHandlers = useMemo(
+      () => ({
+        aboutToggle: () => safeToggleSection("about"),
+        howToUseToggle: () => safeToggleSection("howToUse"),
+        mjParamsToggle: () => safeToggleSection("mjParams"),
+        tipsToggle: () => safeToggleSection("tips"),
+      }),
+      [safeToggleSection]
+    );
+
     return (
-      <div className="bg-white dark:bg-gray-800 backdrop-blur-md rounded-2xl p-4 border border-gray-200 dark:border-gray-600 shadow-sm transition-colors duration-300">
-        <button
-          onClick={onToggle}
-          className="w-full flex items-center justify-between text-gray-800 dark:text-gray-200 font-medium transition-colors duration-300 hover:text-gray-900 dark:hover:text-white"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* About App - Enhanced with market research data */}
+        <CollapsibleSection
+          icon={Info}
+          title={translations.aboutApp}
+          isExpanded={safeExpandedSections.about}
+          onToggle={sectionHandlers.aboutToggle}
         >
-          <div className="flex items-center gap-2">
-            <Icon size={16} className="text-gray-600 dark:text-gray-400" />
-            {title}
-          </div>
-          {isExpanded ? 
-            <ChevronUp size={16} className="text-gray-500 dark:text-gray-400" /> : 
-            <ChevronDown size={16} className="text-gray-500 dark:text-gray-400" />
-          }
-        </button>
-        {isExpanded && (
-          <div className="mt-3 text-gray-600 dark:text-gray-300 text-sm space-y-2 transition-colors duration-300">
-            {children}
-          </div>
-        )}
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line1}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line2}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line3}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line4}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line5}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line6}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line7}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.aboutContent.line8}
+          </p>
+        </CollapsibleSection>
+
+        {/* How to Use - Updated with new features */}
+        <CollapsibleSection
+          icon={HelpCircle}
+          title={translations.howToUse}
+          isExpanded={safeExpandedSections.howToUse}
+          onToggle={sectionHandlers.howToUseToggle}
+        >
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>1.</strong> {translations.howToContent.step1}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>2.</strong> {translations.howToContent.step2}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>3.</strong> {translations.howToContent.step3}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>4a.</strong>{" "}
+            <span className="text-blue-600 dark:text-blue-400">
+              {translations.howToContent.step4a}
+            </span>
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>4b.</strong>{" "}
+            <span className="text-indigo-600 dark:text-indigo-400">
+              {translations.howToContent.step4b}
+            </span>
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>5.</strong> {translations.howToContent.step5}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <strong>6.</strong> {translations.howToContent.step6}
+          </p>
+        </CollapsibleSection>
+
+        {/* Midjourney Parameters - V7 updated */}
+        <CollapsibleSection
+          icon={Bot}
+          title={translations.mjParams}
+          isExpanded={safeExpandedSections.mjParams}
+          onToggle={sectionHandlers.mjParamsToggle}
+        >
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --ar
+            </code>{" "}
+            {translations.mjParamsContent.ar}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --q
+            </code>{" "}
+            {translations.mjParamsContent.quality}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --c
+            </code>{" "}
+            {translations.mjParamsContent.chaos}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --s
+            </code>{" "}
+            {translations.mjParamsContent.stylize}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --weird
+            </code>{" "}
+            {translations.mjParamsContent.weird}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+              --no
+            </code>{" "}
+            {translations.mjParamsContent.no}
+          </p>
+        </CollapsibleSection>
+
+        {/* Pro Tips - Enhanced with 2025 updates */}
+        <CollapsibleSection
+          icon={Star}
+          title={translations.proTips}
+          isExpanded={safeExpandedSections.tips}
+          onToggle={sectionHandlers.tipsToggle}
+        >
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.tipsContent.line1}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.tipsContent.line2}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.tipsContent.line3}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.tipsContent.line4}
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
+            {translations.tipsContent.line5}
+          </p>
+          <p className="text-green-600 dark:text-green-400 font-medium transition-colors duration-300">
+            {translations.tipsContent.line6}
+          </p>
+          <p className="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">
+            {translations.tipsContent.line7}
+          </p>
+          <p className="text-orange-600 dark:text-orange-400 font-medium transition-colors duration-300">
+            {translations.tipsContent.line8}
+          </p>
+        </CollapsibleSection>
       </div>
     );
-  };
+  }
+);
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      {/* About App */}
-      <CollapsibleSection
-        icon={Info}
-        title={safeT('aboutApp') || 'About App'}
-        isExpanded={safeExpandedSections.about}
-        onToggle={() => safeToggleSection('about')}
-      >
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('aboutContent.line1') || '🎯 Generator Adobe Stock: Membuat prompt yang dioptimalkan untuk fotografi stok berdasarkan kategori trending Juli 2025'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('aboutContent.line2') || '🤖 Integrasi Midjourney: Dukungan penuh V7 dengan parameter terbaru dan format Discord'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('aboutContent.line3') || '🎲 Randomisasi Cerdas: Setiap generasi membuat prompt unik yang tidak pernah berulang'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('aboutContent.line4') || '📊 Berbasis Riset: Dibangun berdasarkan tren pasar Juli 2025 dan data desain dimensional'}
-        </p>
-      </CollapsibleSection>
-
-      {/* How to Use */}
-      <CollapsibleSection
-        icon={HelpCircle}
-        title={safeT('howToUse') || 'How to Use'}
-        isExpanded={safeExpandedSections.howToUse}
-        onToggle={() => safeToggleSection('howToUse')}
-      >
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>1.</strong> {safeT('howToContent.step1') || 'Pilih mode output (Standard/Midjourney)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>2.</strong> {safeT('howToContent.step2') || 'Pilih kategori, gaya, dan mood'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>3.</strong> {safeT('howToContent.step3') || 'Atur pengaturan lanjutan jika diperlukan'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>4a.</strong> <span className="text-blue-600 dark:text-blue-400">{safeT('howToContent.step4a') || 'Buat Prompt - Menggunakan pengaturan ANDA dengan variasi unik'}</span>
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>4b.</strong> <span className="text-indigo-600 dark:text-indigo-400">{safeT('howToContent.step4b') || 'Random Semua Kategori - Randomize semuanya untuk variasi maksimal'}</span>
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>5.</strong> {safeT('howToContent.step5') || 'Copy individual atau export semua'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <strong>6.</strong> {safeT('howToContent.step6') || 'Gunakan di tools AI Anda!'}
-        </p>
-      </CollapsibleSection>
-
-      {/* Midjourney Parameters */}
-      <CollapsibleSection
-        icon={Bot}
-        title={safeT('mjParams') || 'MJ Parameters'}
-        isExpanded={safeExpandedSections.mjParams}
-        onToggle={() => safeToggleSection('mjParams')}
-      >
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--ar</code> {safeT('mjParamsContent.ar') || 'Rasio aspek (16:9, 1:1, dll.)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--v</code> {safeT('mjParamsContent.v') || 'Versi (7 terbaru, 6.1 default)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--chaos</code> {safeT('mjParamsContent.chaos') || 'Keacakan (0-100)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--s</code> {safeT('mjParamsContent.s') || 'Level stylize (0-1000)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--q</code> {safeT('mjParamsContent.q') || 'Kualitas (.25, .5, 1, 2, 4)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--weird</code> {safeT('mjParamsContent.weird') || 'Estetika tidak biasa (0-3000)'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--raw</code> {safeT('mjParamsContent.raw') || 'Output kurang stylized'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--tile</code> {safeT('mjParamsContent.tile') || 'Pola seamless'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">--niji</code> {safeT('mjParamsContent.niji') || 'Model gaya anime'}
-        </p>
-      </CollapsibleSection>
-
-      {/* Tips */}
-      <CollapsibleSection
-        icon={Star}
-        title={safeT('proTips') || 'Pro Tips'}
-        isExpanded={safeExpandedSections.tips}
-        onToggle={() => safeToggleSection('tips')}
-      >
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('tipsContent.line1') || '💡 Update: Diperkaya dengan objek bisnis trending Juli 2025 & background isolated'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('tipsContent.line2') || '🎨 Midjourney: V7 butuh unlock personalisasi, V6.1 adalah default'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('tipsContent.line3') || '📐 Rasio Aspek: 16:9 untuk landscape, 9:16 untuk mobile, 1:1 untuk sosial'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('tipsContent.line4') || '🎲 Setiap generasi unik - tidak ada lagi prompt berulang!'}
-        </p>
-        <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-          {safeT('tipsContent.line5') || '🎯 Tips: Kombinasikan multiple styles untuk hasil yang lebih kreatif'}
-        </p>
-        <p className="text-green-600 dark:text-green-400 font-medium transition-colors duration-300">
-          {safeT('tipsContent.line6') || '💡 Gunakan Manual Keyword untuk kontrol penuh atas konten yang diinginkan'}
-        </p>
-        <p className="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">
-          {safeT('tipsContent.line7') || '🚀 Export semua prompt untuk batch processing di tools AI favorit Anda'}
-        </p>
-      </CollapsibleSection>
-    </div>
-  );
-};
+// ✅ FIX: Add display name for better debugging
+InfoSections.displayName = "InfoSections";
 
 export default InfoSections;

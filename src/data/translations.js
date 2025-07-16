@@ -29,14 +29,14 @@ export const translations = {
 
     aboutApp: "About App",
     aboutContent: {
-      line1: "🎯 Research-Based: Built on Adobe Stock market analysis showing $4.65B to $8.54B growth (2024-2033)",
-      line2: "🤖 AI-Optimized: 47.85% of Adobe Stock is now AI-generated - we're ahead of the curve", 
-      line3: "💰 ROI-Focused: 6 categories selected based on proven commercial performance data",
-      line4: "📊 Evergreen Strategy: Focus on sustainable, non-seasonal content with consistent sales",
-      line5: "🚫 Zero Living Creatures: Compliant with no-people, no-animals, no-plants policy",
-      line6: "✨ Quality Standards: Meets Adobe's technical requirements (4-100MP, sRGB, isolated)",
-      line7: "🔍 SEO Optimized: High-performing keywords and metadata structures included",
-      line8: "💼 Commercial Grade: Ready for enhanced licensing and business applications"
+      line1:
+        "🎯 Adobe Stock Generator: Creates prompts optimized for stock photography based on July 2025 trending categories",
+      line2:
+        "🤖 Midjourney Integration: Full V7 support with latest parameters and Discord format",
+      line3:
+        "🎲 Smart Randomization: Each generation creates unique prompts that never repeat",
+      line4:
+        "📊 Research-Based: Built on July 2025 market trends and dimensional design data",
     },
 
     howToUse: "How to Use",
@@ -115,13 +115,12 @@ export const translations = {
 
     categories: {
       business: "Business & Technology",
-      transportation: "Transportation & Logistics", // NEW CATEGORY
+      lifestyle: "Lifestyle & Wellness",
       food: "Food & Nutrition",
       abstract: "Abstract & Patterns",
-      nature: "Nature & Environmental", // Updated name
-      architecture: "Architecture & Interiors"
+      nature: "Nature & Landscapes",
+      architecture: "Architecture & Interiors",
     },
-    
 
     category: "Category",
     contentType: "Content Type",
@@ -215,6 +214,55 @@ export const translations = {
     },
 
     floatingSupport: "Support this amazing tool ❤️",
+    
+    // AI Settings translations
+    aiSettings: {
+      title: "AI Settings",
+      subtitle: "Configure your AI provider",
+      chooseProvider: "Choose AI Provider",
+      chooseModel: "Choose Model",
+      apiKey: "API Key",
+      apiKeyPlaceholder: "Enter your {provider} API key",
+      apiKeyHint: "Your API key is stored locally and never sent to our servers",
+      initialize: "Initialize",
+      connecting: "Connecting...",
+      test: "Test",
+      successMessage: "Successfully connected to {provider} with {model}!",
+      connectedTo: "Connected to {provider}",
+      usingModel: "Using model: {model}",
+      needApiKeys: "Need API keys?",
+      geminiLink: "Get free API key from Google AI Studio",
+      openaiLink: "Get API key from OpenAI Platform",
+      costInfo: "Cost Info:",
+      payDirectly: "You pay directly to the AI provider",
+      noCharge: "This app doesn't charge for AI usage",
+      localOnly: "Your API key is stored locally only",
+      free: "Free",
+      maxTokens: "Max tokens: [count]",
+      costPerToken: "$[cost]/1K tokens"
+    },
+    
+    // AI Enhancement translations
+    aiEnhancement: {
+      title: "AI Enhancement",
+      poweredBy: "Powered by {provider}",
+      enhance: "Enhance",
+      analyze: "Analyze",
+      variations: "Variations",
+      enhancedPrompt: "Enhanced Prompt",
+      copyEnhanced: "Copy Enhanced",
+      qualityAnalysis: "Quality Analysis",
+      qualityScore: "Quality Score",
+      strengths: "Strengths",
+      improvements: "Areas for Improvement",
+      suggestions: "Suggestions",
+      marketAppeal: "Market Appeal",
+      variation: "Variation {number}",
+      configureFirst: "Configure AI service first",
+      available: "AI Enhancement Available",
+      configureProvider: "Configure your AI provider to unlock prompt enhancement features",
+      supports: "Supports: Gemini • OpenAI • Real-time enhancement"
+    }
   },
 
   id: {
@@ -246,16 +294,16 @@ export const translations = {
 
     aboutApp: "Tentang Aplikasi",
     aboutContent: {
-      line1: "🎯 Berbasis Riset: Dibangun berdasarkan analisis pasar Adobe Stock $4,65B ke $8,54B (2024-2033)",
-      line2: "🤖 Optimasi AI: 47,85% Adobe Stock kini AI-generated - kami di depan kurva",
-      line3: "💰 Fokus ROI: 6 kategori dipilih berdasarkan data performa komersial terbukti", 
-      line4: "📊 Strategi Evergreen: Fokus konten berkelanjutan non-musiman dengan penjualan konsisten",
-      line5: "🚫 Tanpa Makhluk Hidup: Patuh kebijakan no-people, no-animals, no-plants",
-      line6: "✨ Standar Kualitas: Memenuhi persyaratan teknis Adobe (4-100MP, sRGB, isolated)",
-      line7: "🔍 Optimasi SEO: Termasuk keyword berkinerja tinggi dan struktur metadata",
-      line8: "💼 Kelas Komersial: Siap enhanced licensing dan aplikasi bisnis"
+      line1:
+        "🎯 Generator Adobe Stock: Membuat prompt yang dioptimalkan untuk fotografi stok berdasarkan kategori trending Juli 2025",
+      line2:
+        "🤖 Integrasi Midjourney: Dukungan penuh V7 dengan parameter terbaru dan format Discord",
+      line3:
+        "🎲 Randomisasi Cerdas: Setiap generasi membuat prompt unik yang tidak pernah berulang",
+      line4:
+        "📊 Berbasis Riset: Dibangun berdasarkan tren pasar Juli 2025 dan data desain dimensional",
     },
-    
+
     howToUse: "Cara Menggunakan",
     howToContent: {
       step1: "Pilih mode output (Standard/Midjourney)",
@@ -331,11 +379,11 @@ export const translations = {
 
     categories: {
       business: "Bisnis & Teknologi",
-      transportation: "Transportasi & Logistik", // KATEGORI BARU  
+      lifestyle: "Gaya Hidup & Wellness",
       food: "Makanan & Nutrisi",
       abstract: "Abstrak & Pola",
-      nature: "Alam & Lingkungan", // Updated name
-      architecture: "Arsitektur & Interior"
+      nature: "Alam & Lanskap",
+      architecture: "Arsitektur & Interior",
     },
 
     category: "Kategori",
@@ -431,5 +479,54 @@ export const translations = {
     },
 
     floatingSupport: "Dukung tools keren ini ❤️",
+    
+    // AI Settings translations - Indonesian
+    aiSettings: {
+      title: "Pengaturan AI",
+      subtitle: "Konfigurasi penyedia AI Anda",
+      chooseProvider: "Pilih Penyedia AI",
+      chooseModel: "Pilih Model",
+      apiKey: "API Key",
+      apiKeyPlaceholder: "Masukkan API key {provider} Anda",
+      apiKeyHint: "API key Anda disimpan secara lokal dan tidak pernah dikirim ke server kami",
+      initialize: "Inisialisasi",
+      connecting: "Menghubungkan...",
+      test: "Test",
+      successMessage: "Berhasil terhubung ke {provider} dengan {model}!",
+      connectedTo: "Terhubung ke {provider}",
+      usingModel: "Menggunakan model: {model}",
+      needApiKeys: "Butuh API keys?",
+      geminiLink: "Dapatkan API key gratis dari Google AI Studio",
+      openaiLink: "Dapatkan API key dari OpenAI Platform",
+      costInfo: "Info Biaya:",
+      payDirectly: "Anda membayar langsung ke penyedia AI",
+      noCharge: "Aplikasi ini tidak mengenakan biaya untuk penggunaan AI",
+      localOnly: "API key Anda hanya disimpan secara lokal",
+      free: "Gratis",
+      maxTokens: "Maks token: [count]",
+      costPerToken: "$[cost]/1K token"
+    },
+    
+    // AI Enhancement translations - Indonesian
+    aiEnhancement: {
+      title: "Peningkatan AI",
+      poweredBy: "Didukung oleh {provider}",
+      enhance: "Tingkatkan",
+      analyze: "Analisis",
+      variations: "Variasi",
+      enhancedPrompt: "Prompt yang Ditingkatkan",
+      copyEnhanced: "Copy Peningkatan",
+      qualityAnalysis: "Analisis Kualitas",
+      qualityScore: "Skor Kualitas",
+      strengths: "Kekuatan",
+      improvements: "Area Perbaikan",
+      suggestions: "Saran",
+      marketAppeal: "Daya Tarik Pasar",
+      variation: "Variasi {number}",
+      configureFirst: "Konfigurasi layanan AI terlebih dahulu",
+      available: "Peningkatan AI Tersedia",
+      configureProvider: "Konfigurasi penyedia AI Anda untuk membuka fitur peningkatan prompt",
+      supports: "Mendukung: Gemini • OpenAI • Peningkatan real-time"
+    }
   },
 };
